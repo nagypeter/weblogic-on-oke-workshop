@@ -11,7 +11,7 @@ This tutorial is based on the official [Oracle WebLogic Kubernetes Operator](htt
 - [Oracle WebLogic Kubernetes Operator](create.weblogic.operator.md) image uploaded to Container Registry (OCIR).
 - Desktop with `Docker 17.03.1.ce` and `kubectl` installed. `kubectl` has to be configured to access to the Kubernetes Cluster.
 
-## Prepare the WebLogic Kubernetes Operator Environment
+## Prepare the WebLogic Kubernetes Operator Environment 
 
 #### Set up the RBAC policy for the OKE cluster ####
 
@@ -35,7 +35,7 @@ At this time, the WebLogic on Kubernetes domain created by the WebLogic Server K
 
 Enter the following `kubectl` command to get the public IP addresses of the nodes:
 
-	$ kubectl get node
+	$ kubectl get node 
 
 The output of the command will display the nodes, similar to the following:
 
@@ -43,7 +43,7 @@ The output of the command will display the nodes, similar to the following:
 	129.146.103.156   Ready     node      9d        v1.9.7
 	129.146.133.192   Ready     node      9d        v1.9.7
 	129.146.166.187   Ready     node      9d        v1.9.7
-
+ 
 To get private IP addresses you need to `ssh` into every node. This requires your private (RSA) key pair of the public key what you defined during OKE creation. Execute the following command for every node:
 
 **ssh -i <YOUR\_RSA\_PRIVATE\_KEY\_LOCATION> opc@<PUBLIC\_IP\_OF\_NODE>**
@@ -89,10 +89,9 @@ Change to *root* user.
 
 	[opc]$ sudo su -
 
-Create `/scratch/external-domain-home/pv001` shared directory for domain binaries.
+Create `/scratch` shared directory.
 
-	[root]$ mkdir -m 777 -p /scratch/external-domain-home/pv001
-	[root]$ chown -R opc:opc /scratch
+	[root]$ mkdir /scratch
 
 Modify `/etc/exports` to enable Node2, Node3 access to Node1 NFS server.
 
@@ -100,7 +99,7 @@ Modify `/etc/exports` to enable Node2, Node3 access to Node1 NFS server.
 
 ---
 
-**NOTE!** By the default the NFS server has to be installed but stopped on OKE node. If the NFS is not installed on node then run `yum install -y nfs-utils` first as super user.
+**NOTE!** If the NFS is not installed on node then run `yum install -y nfs-utils` first as super user.
 
 ---
 
@@ -119,9 +118,15 @@ Add private IP addresses of Node2 and Node3.
 
 Save the changes and restart NFS service.
 
-	[root]$ service nfs-server start
+	[root]$ systemctl restart nfs
 
-Type **exit** to exit as *root* and type **exit** again to end the *ssh* session.
+Exit as *root* and create the domain directory in the shared folder. Also change the access permissions of the folder.
+
+	[root]$ exit
+	[opc]$ mkdir -m 777 -p /scratch/external-domain-home/pv001
+	[opc]$ chmod 777 -R /scratch/
+	
+Type **exit** to end the *ssh* session.
 
 	[opc]$ exit
 
@@ -146,7 +151,7 @@ Edit the `/etc/fstab` file.
 	[root]$ vi /etc/fstab
 
 Add the internal IP address and parameters of **Node1 - NFS server**. Append as last row.
-
+	
 	#
 	# /etc/fstab
 	# Created by anaconda on Fri Feb  9 01:25:44 2018
@@ -183,10 +188,6 @@ Add the internal IP address and parameters of **Node1 - NFS server**. Append as 
 Save changes. Mount the shared `/scratch` directory.
 
 	[root]$ mount /scratch
-
-Restart the NFS service.
-
-	[root]$ service nfs-server restart
 
 Exit as *root* and end the session.
 
@@ -207,14 +208,14 @@ Change to *root* user.
 
 Create `/scratch` shared directory.
 
-	[root]$ mkdir /scratch
+	[root]$ mkdir /scratch 
 
 Edit the `/etc/fstab` file.
 
 	[root]$ vi /etc/fstab
 
 Add the internal IP address and parameters of **Node1 - NFS server**. Append as last row.
-
+	
 	#
 	# /etc/fstab
 	# Created by anaconda on Fri Feb  9 01:25:44 2018
@@ -251,10 +252,6 @@ Add the internal IP address and parameters of **Node1 - NFS server**. Append as 
 Save changes. Mount the shared `/scratch` directory.
 
 	[root]$ mount /scratch
-
-Restart the NFS service.
-
-	[root]$ service nfs-server restart
 
 Exit as *root* and end the session.
 
@@ -287,23 +284,17 @@ Now you are ready to pull the  image on docker enabled host after authenticating
 
 #### Upload the WebLogic Docker images to the OCI Registry ####
 
-##### Get the official WebLogic image from Docker Store #####
-The process to move WebLogic image from Docker Store to your OCIR first log in to Docker Store using `docker` CLI and pull the `store/oracle/weblogic:12.2.1.3` image to your desktop.
+The process to move WebLogic image from Docker Store to your OCIR first pull the image to your desktop.
 
-	$ docker login
-	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-	Username: <YOUR_DOCKER_USERNAME>
-	Password: <YOUR_DOCKER_PASSWORD>
-	Login Succeeded
 	$ docker pull store/oracle/weblogic:12.2.1.3
 	12.2.1.3: Pulling from store/oracle/weblogic
-	4040fe120662: Already exists
-	5788a5fddf0e: Already exists
-	88fc159ecf27: Already exists
-	138d86176392: Already exists
-	c8bbee357786: Pull complete
-	8bfb4a53e381: Pull complete
-	76a4c7bc88d8: Pull complete
+	4040fe120662: Already exists 
+	5788a5fddf0e: Already exists 
+	88fc159ecf27: Already exists 
+	138d86176392: Already exists 
+	c8bbee357786: Pull complete 
+	8bfb4a53e381: Pull complete 
+	76a4c7bc88d8: Pull complete 
 	Digest: sha256:e3e48963b360e6d7ce86659719487f568c89249979965210b48e979d7b262e1a
 	Status: Downloaded newer image for store/oracle/weblogic:12.2.1.3
 	[oracle@localhost ~]$ docker pull store/oracle/weblogic:12.2.1.3
@@ -311,43 +302,6 @@ The process to move WebLogic image from Docker Store to your OCIR first log in t
 	Digest: sha256:e3e48963b360e6d7ce86659719487f568c89249979965210b48e979d7b262e1a
 	Status: Image is up to date for store/oracle/weblogic:12.2.1.3
 	$
-
-##### Create OCI Repository #####
-
-In the OCI Console, open the navigation menu. Select **Developer Services** and click **Registry**.
-
-![alt text](images/build.operator/33.select.registry.png)
-
-Click *Create Repository*.
-
-![alt text](images/deploy.weblogic/20.create.repository.png)
-
-In the Add Repository dialog box, specify details for the new repository.
-
-+ Repository name: weblogic
-+ Public: select to make the repository available without authentication.
-
-Click **Submit**.
-
-![alt text](images/deploy.weblogic/21.repository.details.png)
-
-##### Get Authentication Token to use Oracle Cloud Infrastructure Registry (OCIR) #####
-
-Oracle Cloud Infrastructure Registry (OCIR) has native support for Docker Registry v2 token authentication. Before you can push and pull Docker images to and from Oracle Cloud Infrastructure Registry, you must already have an Oracle Cloud Infrastructure username and an auth token. In the next step you will generate your token.
-
-On the console click the user icon on top-rigth corner and select **User Settings**. On the user details page select **Auth Tokens** in the left menu. Click **Generate Token**.
-
-![alt text](images/deploy.weblogic/22.auth.token.page.png)
-
-Enter a friendly description for the auth token and click **Generate Token**.
-
-![alt text](images/deploy.weblogic/26.oci.user.auth.token.generate.png)
-
-The new auth token is displayed. **Copy** the auth token immediately to a secure location from where you can retrieve it later, because you won't see the auth token again in the Console. **Close** the Generate Token dialog.
-
-![alt text](images/deploy.weblogic/27.oci.user.auth.token.generate.png)
-
-##### Upload WebLogic image to OCI Repository #####
 
 Create tag (name) of the image which reflects the full container repository (OCIR) path including the registry where you want to push the image. In case of OCI it is the following format: `<region-code>.ocir.io/<tenancy-name>/<repos-name>/<image-name>:<tag>`.
 
@@ -360,7 +314,7 @@ Create tag (name) of the image which reflects the full container repository (OCI
 
 Apply the new tag for WebLogic image as follow but don't forget to construct your image name.
 
-**docker tag store/oracle/weblogic:12.2.1.3 <region-code\>.ocir.io/<tenancy-name\>/<image-name\>:<tag\>**
+**docker tag store/oracle/weblogic:12.2.1.3 <region-code>.ocir.io/<tenancy-name>/<image-name>:<tag>**
 
 For example:
 
@@ -378,29 +332,28 @@ Log in to Oracle Cloud Infrastructure Registry (OCIR) by entering `docker login 
 For example:
 
 	$ docker login phx.ocir.io
-	Username: weblogick8s/jdoe@acme.com
-	Password:
+	Username: acme-dev/jdoe@acme.com
+	Password: 
 	Login Succeeded
 
-When prompted, enter your username in the format `<tenancy_name>/<username>`. For example, **weblogick8s/jdoe@acme.com**. When password is prompted, enter the auth token you generated and copied earlier.
+When prompted, enter your username in the format `<tenancy_name>/<username>`. For example, **acme-dev/jdoe@acme.com**. When password is prompted, enter the auth token you generated and copied earlier.
 
 Push the Docker image from the client machine to Oracle Cloud Infrastructure Registry by entering:
 
 	$ docker push phx.ocir.io/weblogick8s/weblogic:12.2.1.3
 	The push refers to repository [phx.ocir.io/weblogick8s/weblogic]
 	4040fe120662: Pushed
-	5788a5fddf0e: Pushed
-	88fc159ecf27: Pushed
-	138d86176392: Pushed
-	c8bbee357786: Pushed
-	8bfb4a53e381: Pushed
+	5788a5fddf0e: Pushed 
+	88fc159ecf27: Pushed 
+	138d86176392: Pushed 
+	c8bbee357786: Pushed 
+	8bfb4a53e381: Pushed 
 	76a4c7bc88d8: Pushed
 	12.2.1.3: digest: sha256:e40f7d4a8798eda625730d69392cc6c2b529027acd4cff0c93877885b5eb7378 size: 1991
 
-When the push completed check the WebLogic image in your OCIR repository.
-In the OCI Console, open the navigation menu. Select **Developer Services** and click **Registry**.
+Check the WebLogic Kubernetes Operator image in your OCIR repository. Open the OCI console click the menu icon ![](images/menu.icon.small.png) on the top-left corner and select **Registry** in the *Containers* section.
 
-![alt text](images/build.operator/33.select.registry.png)
+![](images/build.operator/33.select.registry.png)
 
 Select the `weblogic` repository and click the 12.2.1.3 *tag*.
 
@@ -408,7 +361,7 @@ Select the `weblogic` repository and click the 12.2.1.3 *tag*.
 
 #### Modify the operator and domain configuration YAML files ####
 
-Final steps are to customize the parameters in the input YAML files for the WebLogic cluster and WebLogic Operator. The input YAML files and scripts provided in the [WebLogic Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator) project.
+Final steps are to customize the parameters in the input YAML files for the WebLogic cluster and WebLogic Operator. The input YAML files and scripts provided in the [WebLogic Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator) project. 
 
 Most likely you already cloned locally the WebLogic Kubernetes Operator source repository to build the operator image. If not then first clone locally. Using the following command the sources will be cloned into `weblogic-kubernetes-operator` folder in the current directory.
 
@@ -424,7 +377,7 @@ Change directory to `weblogic-kubernetes-operator/kubernetes` where the paramete
 
 	cd weblogic-kubernetes-operator/kubernetes/internal
 
-Modify the **image** field in the *create-weblogic-domain-job-template.yaml* file to the corresponding Docker repository image name in the OCIR. (line ~#278). The repository and image name what you created in the previous steps to tag and upload image to your OCI Registry.
+Modify the **image** field in the *create-weblogic-domain-job-template.yaml* file to the corresponding Docker repository image name in the OCIR. (line ~#278)
 
 **image: <OCI\_REGION>.ocir.io/<YOUR\_OCI\_TENANCY>/weblogic:12.2.1.3**
 
@@ -445,7 +398,8 @@ Open and modify the following parameters in the *create-weblogic-operator-inputs
 | Parameter name                        | Value                                                                  | Note                                                                       |
 |---------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------------|
 | targetNamespaces                      | domain1                                                                |                                                                            |
-| weblogicOperatorImage                 | oracle/weblogic-kubernetes-operator:1.0 | |
+| weblogicOperatorImage                 | <ocir_region>.ocir.io/<oci_tenancy>/weblogic-kubernetes-operator:<tag> | For example: phx.ocir.io/weblogick8s/weblogic-kubernetes-operator:pnagy0.2 |
+| weblogicOperatorImagePullSecretName   | OCIRSecret                                                             | Don't forget to remove comment character '#' if necessary                  |
 | externalRestOption                    | SELF_SIGNED_CERT                                                       |                                                                            |
 | externalSans                          | IP:129.146.103.156                                                     | Node1 - NFS server public IP address                                       |
 
@@ -472,21 +426,30 @@ This demo operator is configured to be run in the namespace *weblogic-operator*.
 
 	kubectl create namespace weblogic-operator
 
+Create a Docker registry secret for the operator to enable access to the `weblogic-kubernetes-operator` and `weblogic` images in the OCIR repository where you uploaded:
+
+**kubectl -n weblogic-operator create secret docker-registry <secret_name> --docker-server=<region>.ocir.io --docker-username=<oci\_tenancyname>/<oci\_username> --docker-password=<ocir\_auth\_token> --docker-email=example_email**
+
+For example:
+
+	kubectl -n weblogic-operator create secret docker-registry OCIRSecret --docker-server=phx.ocir.io --docker-username=acme-dev/jdoe@acme.com --docker-password=k]j64r{1<sJSSF-;>)K8 --docker-email=jdoe@acme.com
+
 This demo domain is configured to be run in the namespace *domain1*. To create namespace *domain1*, execute this command:
 
 	kubectl create namespace domain1
 
-The username and password credentials for access to the Administration Server must be stored in a Kubernetes secret in the same namespace that the domain will run in. The script does not create the secret in order to avoid storing the credentials in a file. To create the secret for this demo, issue the following command (you can change the password below, but don't forget later):
+The username and password credentials for access to the Administration Server must be stored in a Kubernetes secret in the same namespace that the domain will run in. The script does not create the secret in order to avoid storing the credentials in a file. To create the secret for this demo, issue the following command:
 
-	kubectl -n domain1 create secret generic domain1-weblogic-credentials username=weblogic password=welcome1
+	kubectl -n domain1 create secret generic domain1-weblogic-credentials username=weblogic password=<PASSWORD>
 
 Create output directory for the operator and domain scripts.
-
-	mkdir -p /PATH_TO/weblogic-output-directory
+	
+	mkdir -p /PATH_TO/weblogic-operator-output-directory
+	mkdir -p /PATH_TO/weblogic-domain-output-directory
 
 Finally, run the create operator script first, pointing it at your inputs file and the output directory. The best to execute in the locally cloned `weblogic-kubernetes-operator/kubernetes` folder:
 
-	./create-weblogic-operator.sh -i create-weblogic-operator-job-inputs.yaml -o /PATH_TO/weblogic-output-directory
+	./create-weblogic-operator.sh -i create-weblogic-operator-job-inputs.yaml -o /PATH_TO/weblogic-operator-output-directory
 	Input parameters being used
 	export version="create-weblogic-operator-inputs-v1"
 	export serviceAccount="weblogic-operator"
@@ -503,17 +466,17 @@ Finally, run the create operator script first, pointing it at your inputs file a
 	export externalDebugHttpPort="30999"
 	export javaLoggingLevel="FINER"
 	export elkIntegrationEnabled="false"
-
+	
 	The WebLogic operator REST interface is externally exposed using a generated self-signed certificate that contains the customer-provided list of subject alternative names.
 	Checking to see if the secret dockersecret exists in namespace weblogic-operator
 	/u01/content/weblogic-kubernetes-operator/kubernetes/internal
 	Generating a self-signed certificate for the operator's internal https port with the subject alternative names DNS:internal-weblogic-operator-svc,DNS:internal-weblogic-operator-svc.weblogic-operator,DNS:internal-weblogic-operator-svc.weblogic-operator.svc,DNS:internal-weblogic-operator-svc.weblogic-operator.svc.cluster.local
 	Generating a self-signed certificate for the operator's external ssl port with the subject alternative names IP:129.146.120.224
-	Generating /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
+	Generating /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
 	Running the weblogic operator security customization script
 	...
-	Generating YAML script /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml to create WebLogic Operator security configuration...
-	Create the WebLogic Operator Security configuration using kubectl as follows: kubectl create -f /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
+	Generating YAML script /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml to create WebLogic Operator security configuration...
+	Create the WebLogic Operator Security configuration using kubectl as follows: kubectl create -f /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
 	Ensure you start the API server with the --authorization-mode=RBAC option.
 	Checking to see if the namespace weblogic-operator already exists
 	The namespace weblogic-operator already exists
@@ -522,7 +485,7 @@ Finally, run the create operator script first, pointing it at your inputs file a
 	The namespace domain1 already exists
 	Checking to see if the service account weblogic-operator already exists
 	The service account weblogic-operator already exists
-	Applying the generated file /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
+	Applying the generated file /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
 	namespace "weblogic-operator" configured
 	serviceaccount "weblogic-operator" unchanged
 	clusterrole "weblogic-operator-cluster-role" configured
@@ -538,7 +501,7 @@ Finally, run the create operator script first, pointing it at your inputs file a
 	Checking role binding weblogic-operator-rolebinding for namespace domain1
 	Checking the cluster role weblogic-operator-cluster-role was created
 	Checking the cluster role bindings weblogic-operator-operator-rolebinding were created
-	Applying the file /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
+	Applying the file /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
 	configmap "weblogic-operator-cm" configured
 	secret "weblogic-operator-secrets" configured
 	deployment "weblogic-operator" configured
@@ -549,25 +512,25 @@ Finally, run the create operator script first, pointing it at your inputs file a
 	Checking the operator labels
 	Checking the operator pods
 	Checking the operator Pod status
-
+	
 	The Oracle WebLogic Server Kubernetes Operator is deployed, the following namespaces are being managed: domain1
-
+	
 	The following files were generated:
-	  /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/create-weblogic-operator-inputs.yaml
-	  /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
-	  /u01/content/weblogic-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
-
+	  /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/create-weblogic-operator-inputs.yaml
+	  /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator.yaml
+	  /u01/content/weblogic-operator-output-directory/weblogic-operators/weblogic-operator/weblogic-operator-security.yaml
+	
 	Completed
 
 Check the pod status in *weblogic-operator* namespace:
 
-	kubectl get pod -n weblogic-operator
+	kubectl get pod -n weblogic-operator 
 	NAME                                 READY     STATUS    RESTARTS   AGE
 	weblogic-operator-58d944d448-jxbph   1/1       Running   0          1m
 
 The operator is running then execute the similar command for the WebLogic domain creation:
 
-	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml  -o /u01/content/weblogic-output-directory
+	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml  -o /u01/content/weblogic-domain-output-directory
 	Input parameters being used
 	export version="create-weblogic-domain-inputs-v1"
 	export adminPort="7001"
@@ -598,13 +561,13 @@ The operator is running then execute the similar command for the WebLogic domain
 	export loadBalancerWebPort="30305"
 	export loadBalancerDashboardPort="30315"
 	export javaOptions="-Dweblogic.StdoutDebugEnabled=false"
-
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-pv.yaml
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-pvc.yaml
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-cluster-1.yaml
-	Generating /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-security-cluster-1.yaml
+	
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-pv.yaml
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-pvc.yaml
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-cluster-1.yaml
+	Generating /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-security-cluster-1.yaml
 	Checking to see if the secret domain1-weblogic-credentials exists in namespace domain1
 	Checking if the persistent volume domain1-weblogic-domain-pv exists
 	No resources found.
@@ -620,7 +583,7 @@ The operator is running then execute the similar command for the WebLogic domain
 	Checking if the persistent volume domain1-weblogic-domain-pv is Bound
 	Checking if object type job with name domain1-create-weblogic-domain-job exists
 	No resources found.
-	Creating the domain by creating the job /u01/content/weblogic-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
+	Creating the domain by creating the job /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
 	configmap "domain1-create-weblogic-domain-job-cm" created
 	job "domain1-create-weblogic-domain-job" created
 	Waiting for the job to complete...
@@ -645,29 +608,29 @@ The operator is running then execute the similar command for the WebLogic domain
 	Checking traefik deployment
 	Checking the traefik service account
 	Checking traefik service
-	Creating the domain custom resource using /u01/content/weblogic-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
+	Creating the domain custom resource using /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
 	domain "domain1" created
 	Checking the domain custom resource was created
-
+	
 	Domain base_domain was created and will be started by the WebLogic Kubernetes Operator
-
+	
 	The load balancer for cluster 'cluster-1' is available at http://c2tqzjtmmyd.us-phoenix-1.clusters.oci.oraclecloud.com:30305/ (add the application path to the URL)
 	The load balancer dashboard for cluster 'cluster-1' is available at http://c2tqzjtmmyd.us-phoenix-1.clusters.oci.oraclecloud.com:30315
-
+	
 	The following files were generated:
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/create-weblogic-domain-inputs.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-pv.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-pvc.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-security-cluster-1.yaml
-	  /u01/content/weblogic-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-cluster-1.yaml
-
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/create-weblogic-domain-inputs.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-pv.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-pvc.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/create-weblogic-domain-job.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/domain-custom-resource.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-security-cluster-1.yaml
+	  /u01/content/weblogic-domain-output-directory/weblogic-domains/domain1/weblogic-domain-traefik-cluster-1.yaml
+	
 	Completed
 
 To check the status of the WebLogic cluster, run this command:
 
-	kubectl get pod -n domain1
+	kubectl get pod -n domain1 
 	NAME                                         READY     STATUS    RESTARTS   AGE
 	domain1-admin-server                         1/1       Running   0          9m
 	domain1-cluster-1-traefik-778bc994f7-7mjw6   1/1       Running   0          9m

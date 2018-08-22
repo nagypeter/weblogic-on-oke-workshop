@@ -4,7 +4,7 @@
 
 This lab demonstrates how to deploy and run WebLogic Domain on Kubernetes Cluster using [Oracle WebLogic Server Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator).
 
-This lab is designed for people with no prior experience with OCI, Kubernetes, WebLogic, Container Registry, Docker and want to learn the core concepts and basics of how to run WebLogic JEE application on Kubernetes environment.
+This lab is designed for people with no prior experience with OCI, Kubernetes, WebLogic, Container Registry, Docker and want to learn the core concepts and basics of how to run WebLogic JEE application on Kubernetes environment. 
 
 The demo application is a simple Credit Scoring application written in Java, JavaScript using Spring Boot and AngularJS frameworks. The application calculates the credit score based on name, date of birth and SSN.
 
@@ -30,8 +30,9 @@ The lab describes user interface available on June, 2018.
 
 ### The topics to be covered in this hands-on session are: ###
 
-1. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.md)
-2. [Create Oracle Container Pipeline to build sample JavaEE application and deploy to WebLogic running on Kubernetes ](tutorials/sample.app.pipeline.md)
+1. [Create Oracle Container Pipeline to build WebLogic Operator](tutorials/create.weblogic.operator.md)
+2. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.md)
+3. [Create Oracle Container Pipeline to build sample JavaEE application and deploy to WebLogic running on Kubernetes ](tutorials/sample.app.pipeline.md)
 
 ### License ###
 Copyright (c) 2014-2018 Oracle and/or its affiliates

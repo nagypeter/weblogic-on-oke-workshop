@@ -32,11 +32,7 @@ Sign in to your cloud account and open OCI console.
 
 #### Create compartment ####
 
-A cluster is created on an existing VCN in a compartment. You should select an existing compartment or create a new one to locate your cluster. To create a compartment open the navigation menu.
-
-![alt text](images/005.menu.png)
-
-Under Identity, click **Compartments**.
+A cluster is created on an existing VCN in a compartment. You should select an existing compartment or create a new one to locate your cluster. To create a compartment open the navigation menu. Under **Identity**, click **Compartments**.
 
 ![alt text](images/006.compartments.png)
 
@@ -48,7 +44,7 @@ Enter the following:
 
 - **Name:** A unique name for the compartment (maximum 100 characters, including letters, numbers, periods, hyphens, and underscores).
 - **Description:** A friendly description.
-- **Tags:** Optionally, you can apply tags. 
+- **Tags:** Optionally, you can apply tags.
 Click **Create Compartment**.
 
 ![alt text](images/008.create.compartment.png)
@@ -69,7 +65,7 @@ Open the navigation menu. Under **Identity**, click **Policies**.
 
 ![alt text](images/011.oci.policies.png)
 
-A list of the policies in the compartment you're viewing is displayed. 
+A list of the policies in the compartment you're viewing is displayed.
 If you want to attach the policy to a compartment other than the one you're viewing, select the desired compartment from the list on the left.
 Click **Create Policy**.
 
@@ -89,7 +85,7 @@ Click **Create**.
 
 #### Network Resources ####
 
-In order to deploy an OKE cluster the compartment must contain the necessary network resources already configured: VCN, subnets, internet gateway, route table, security lists. 
+In order to deploy an OKE cluster the compartment must contain the necessary network resources already configured: VCN, subnets, internet gateway, route table, security lists.
 
 ##### Virtual Cloud Network #####
 
@@ -110,9 +106,9 @@ Enter the following:
 - **Create in Compartment:** Leave as is.
 - **Name:** A friendly name for the cloud network. E.g. *VCN-Cluster-1*
 - **Create Virtual Cloud Network Only:** Make sure this radio button is selected.
-- **CIDR Block:** A single, contiguous CIDR block for the cloud network. You cannot change this value later. 
-- **DNS Resolution:** Select the Use DNS Hostnames in this VCN checkbox. 
-- **DNS Label:** Specify a DNS label for the VCN.  Basically the Console will generate one for you. The dialog box automatically displays the corresponding DNS Domain Name for the VCN (<VCN DNS label>.oraclevcn.com). 
+- **CIDR Block:** A single, contiguous CIDR block for the cloud network. You cannot change this value later.
+- **DNS Resolution:** Select the Use DNS Hostnames in this VCN checkbox.
+- **DNS Label:** Specify a DNS label for the VCN.  Basically the Console will generate one for you. The dialog box automatically displays the corresponding DNS Domain Name for the VCN (<VCN DNS label>.oraclevcn.com).
 - **Tags:** Optionally, you can apply tags.
 
 Click Create Virtual Cloud Network.
@@ -123,7 +119,7 @@ Click Create Virtual Cloud Network.
 
 A security list provides a virtual firewall for an instance, with ingress and egress rules that specify the types of traffic allowed in and out. Each security list is enforced at the instance level. However, you configure your security lists at the subnet level, which means that all instances in a given subnet are subject to the same set of rules. The security lists apply to a given instance whether it's talking with another instance in the VCN or a host outside the VCN.
 
-On the **Networking** page select **Security Lists**. OKE requires at least two lists: one for worker nodes and one for the load balancer. 
+On the **Networking** page select **Security Lists**. OKE requires at least two lists: one for worker nodes and one for the load balancer.
 
 First define the security list for worker node(s). Before create the rules identify your IP address what is neccessary to open up the correct IP range to enable incoming traffic from your desktop to the cluster services. You can easily get your visible IP address using a google search: [https://www.google.hu/search?q=myip](https://www.google.hu/search?q=myip). Note the result and replace when you need type **<MY\_IP\_ADDRESS>**.
 
@@ -133,7 +129,7 @@ Click **Create Security List** to create new security list.
 
 Enter the following:
 
-- **Create in Compartment:** The compartment where you want to create the security list, if different from the compartment you're currently working in. 
+- **Create in Compartment:** The compartment where you want to create the security list, if different from the compartment you're currently working in.
 - **Security List Name:** A friendly name for the security list e.g. *worker node seclist*
 - **Ingress rules:**
 
@@ -146,8 +142,8 @@ Enter the following:
 | Stateful  | 130.35.0.0/16 | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: 22 |For the OCI Clusters service to access workers|
 | Stateful  | 138.1.0.0/17  | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: 22 |For the OCI Clusters service to access workers|
 | Stateful  | **<MY\_IP\_ADDRESS>**/32  | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: All |For your desktop to access workers|
-| Stateful  | 0.0.0.0/0  | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: 30701 |To access WebLogic Administration console in case if you [deploy WebLogic Domain](setup.weblogic.kubernetes.md).|
-| Stateful  | 0.0.0.0/0  | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: 30305 |Enable Traefik's traffic in case if you [deploy WebLogic Domain](setup.weblogic.kubernetes.md).|
+| Stateful  | 0.0.0.0/0  | IP Protocol: TCP            | Source Port Range: All | Destination Port Range: 30000-32767 |To access application e.g. Traefik, WebLogic in case if you [deploy WebLogic Domain](setup.weblogic.kubernetes.md).|
+
 
 
 ![alt text](images/018.oci.worker.security.list.ingress.png)
@@ -178,7 +174,7 @@ Create a another security list for loadbalancer. Click again **Create Security L
 
 Enter the following:
 
-- **Create in Compartment:** The compartment where you want to create the security list, if different from the compartment you're currently working in. 
+- **Create in Compartment:** The compartment where you want to create the security list, if different from the compartment you're currently working in.
 - **Security List Name:** A friendly name for the security list e.g. *loadbalancer seclist*
 - **Ingress rules:**
 
@@ -210,7 +206,7 @@ Enter the following:
 
 - **Create in Compartment:** The compartment where you want to create the internet gateway, if different from the compartment you're currently working in.
 - **Name:** A friendly name for the internet gateway. For example *ig-cluster-1*
-- **Tags:** Optionally, you can apply tags. 
+- **Tags:** Optionally, you can apply tags.
 
 Click **Create**.
 
@@ -249,7 +245,7 @@ A cloud network is a software-defined network that you set up in Oracle data cen
 
 Each subnet in a VCN exists in a single availability domain and consists of a contiguous range of IP addresses that do not overlap with other subnets in the cloud network. Example: 172.16.1.0/24. The first two IP addresses and the last in the subnet's CIDR are reserved by the Networking service. You can't change the size of the subnet after creation, so it's important to think about the size of subnets you need before creating them. Also, the subnet acts as a unit of configuration: all instances in a given subnet use the same route table, security lists, and DHCP options.
 
-In this scenario 5 subnets are required. 
+In this scenario 5 subnets are required.
 
 - 3 subnets will be used to deploy (3) worker nodes. Each one should of those subnets should be in a different Availability Domain.
 - 2 subnets will be used for hosting load balancers. Each of those should be in a different availability domain.
@@ -260,16 +256,16 @@ While viewing the VCN's details, click **Create Subnet**.
 
 ![alt text](images/028.oci.select.subnets.png)
 
-In the Create Subnet dialog box, you specify the resources to associate with the subnet (for example, a route table, and so on). By default, the subnet will be created in the current compartment, and you'll choose the resources from the same compartment. 
+In the Create Subnet dialog box, you specify the resources to associate with the subnet (for example, a route table, and so on). By default, the subnet will be created in the current compartment, and you'll choose the resources from the same compartment.
 
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *cluster-1-loadbalancers-1*
 - **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
-- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.20.0/24`. You cannot change this value later. 
+- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.20.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
-- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected. 
+- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected.
 - **DNS Label:** The Console will generate one based on the VCN DNS label. However modify to: *cluster1lb1*
 - **DHCP Options:** Select the available default DHCP options for your VCN.
 - **Security Lists:** Select the previously created *loadbalancer seclist* security list.
@@ -285,10 +281,10 @@ Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *cluster-1-loadbalancers-2*
 - **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-2*.
-- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.21.0/24`. You cannot change this value later. 
+- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.21.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
-- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected. 
+- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected.
 - **DNS Label:** The Console will generate one based on the VCN DNS label. However modify to: *cluster1lb2*
 - **DHCP Options:** Select the available default DHCP options for your VCN.
 - **Security Lists:** Select the same *loadbalancer seclist* security list what you created in the previous steps.
@@ -306,10 +302,10 @@ Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-1*
 - **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
-- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.10.0/24`. You cannot change this value later. 
+- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.10.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
-- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected. 
+- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected.
 - **DNS Label:** The Console will generate one based on the VCN DNS label. However modify to: *workersubnet1*
 - **DHCP Options:** Select the available default DHCP options for your VCN.
 - **Security Lists:** Select the same *worker node seclist* security list what you created in the previous steps.
@@ -325,10 +321,10 @@ Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-2*
 - **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
-- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.11.0/24`. You cannot change this value later. 
+- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.11.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
-- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected. 
+- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected.
 - **DNS Label:** The Console will generate one based on the VCN DNS label. However modify to: *workersubnet2*
 - **DHCP Options:** Select the available default DHCP options for your VCN.
 - **Security Lists:** Select the same *worker node seclist* security list what you created in the previous steps.
@@ -344,10 +340,10 @@ Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-3*
 - **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
-- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.12.0/24`. You cannot change this value later. 
+- **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.12.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
-- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected. 
+- **Use DNS Hostnames in this Subnet:** Leave default which has to be selected.
 - **DNS Label:** The Console will generate one based on the VCN DNS label. However modify to: *workersubnet3*
 - **DHCP Options:** Select the available default DHCP options for your VCN.
 - **Security Lists:** Select the same *worker node seclist* security list what you created in the previous steps.
@@ -410,14 +406,14 @@ Click on cluster name *demo-cluster-1* to view the details. When the nodes have 
 
 To get kubernetes configuration first you need to install OCI CLI. For Linux execute the following command which will install the CLI and dependencies.
 
-	bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+	$ bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
 
 For Windows see the [documentation](https://docs.us-phoenix-1.oraclecloud.com/Content/API/SDKDocs/cliinstall.htm).
 
 To check the installation query the version info.
 
 	[oracle@localhost kubernetes]$ oci -v
-	2.4.23
+	2.4.30
 
 Before using the CLI, you have to create a config file that contains the required credentials for working with Oracle Cloud Infrastructure. To have the CLI walk you through the first-time setup process, step by step, use the `oci setup config` command. The command prompts you for the information required for the config file and the API public/private keys. The setup dialog generates an API key pair and creates the config file.
 
@@ -431,51 +427,51 @@ In the **Console** click on your OCI user name and select **User Settings**. On 
 
 ![alt text](images/40.oci.cli.setup.information.png)
 
-Leave the console open during CLI configuration and copy the required information from the console page. When you want to accept the default value what is offered in square bracket just hit Enter. 
+Leave the console open during CLI configuration and copy the required information from the console page. When you want to accept the default value what is offered in square bracket just hit Enter.
 
 Execute `oci setup config` command to setup the CLI:
 
 
-	[oracle@localhost kubernetes]$ oci setup config
+	$ oci setup config
 	    This command provides a walkthrough of creating a valid CLI config file.
-	
+
 	    The following links explain where to find the information required by this
 	    script:
-	
+
 	    User OCID and Tenancy OCID:
-	
+
 	        https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/apisigningkey.htm#Other
-	
+
 	    Region:
-	
+
 	        https://docs.us-phoenix-1.oraclecloud.com/Content/General/Concepts/regions.htm
-	
+
 	    General config documentation:
-	
+
 	        https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/sdkconfig.htm
-	
-	
-	Enter a location for your config [/home/oracle/.oci/config]: 
+
+
+	Enter a location for your config [/home/oracle/.oci/config]:
 	Enter a user OCID: <YOUR_USER_OCID>
 	Enter a tenancy OCID: <YOUR_TENANCY_OCID> Enter a region (e.g. eu-frankfurt-1, uk-london-1, us-ashburn-1, us-phoenix-1): <YOUR_REGION>
 	Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]: Y
-	Enter a directory for your keys to be created [/home/oracle/.oci]: 
-	Enter a name for your key [oci_api_key]: 
+	Enter a directory for your keys to be created [/home/oracle/.oci]:
+	Enter a name for your key [oci_api_key]:
 	Public key written to: /home/oracle/.oci/oci_api_key_public.pem
-	Enter a passphrase for your private key (empty for no passphrase): 
+	Enter a passphrase for your private key (empty for no passphrase):
 	Private key written to: /home/oracle/.oci/oci_api_key.pem
 	Fingerprint: 41:ea:cf:23:01:a2:bb:fb:84:79:34:8e:fe:bc:18:4f
 	Config written to /home/oracle/.oci/config
-	
-	
+
+
 	    If you haven't already uploaded your public key through the console,
 	    follow the instructions on the page linked below in the section 'How to
 	    upload the public key':
-	
+
 	        https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/apisigningkey.htm#How2
-	
-	
-	[oracle@localhost kubernetes]$ 
+
+
+	$
 
 The final step to complete the CLI setup to upload your freshly generated public key through the console. The public key if you haven't changed during setup can be found in the `/home/oracle/.oci/` directory and it's name `oci_api_key_public.pem`. Using your favourite way copy its content to the clipboard. While viewing user details click **Add Public Key**.
 
@@ -485,36 +481,28 @@ Copy the content of the `oci_api_key_public.pem` file into the *PUBLIC KEY* text
 
 ![alt text](images/42.oci.cli.add.key.png)
 
-The CLI setup now is done. To complete the `kubectl` configuration open the navigation menu and under **Containers**, click **Clusters**. Select your cluster and click to get the detail page.
+The CLI setup now is done. To complete the `kubectl` configuration open the navigation menu and under **Containers**, click **Clusters**.
 
 ![alt text](images/43.oci.clusters.png)
+
+Select your cluster and click to get the detail page.
+
+![alt text](images/43b.oci.select.cluster.png)
 
 Click **Get Started**.
 
 ![alt text](images/44.oci.cluster.get.config.png)
 
-Currently OCI CLI for container engine is not available thus you need to download a script which will generate *kubeconfig* using your OCI CLI configuration (authentication). Click **Download script**.
+A dialog pops up which contains the customized OCI command what you need to execute to create Kubernetes configuration file.
 
 ![alt text](images/45.oci.cluster.download.script.png)
 
-Then copy the commands from the text are below to execute the downloaded script. Note the commands prepared in a way that you downloaded the `get-kubeconfig.sh` script into your home folder `~/`. If you have downloaded to different directory then don't forget to modify the commands to reflect the proper location.
+Copy and execute the commands on your desktop where OCI CLI was configured.
 
-![alt text](images/46.oci.cluster.download.commands.png)
-
-Modify if necessary then paste and execute commands.
-
-	[oracle@localhost ~]$ # Assuming the file is in your home directory
-	[oracle@localhost ~]$ chmod +x ~/get-kubeconfig.sh
-	[oracle@localhost ~]$ 
-	[oracle@localhost ~]$ # Export ENDPOINT which points to the region's api server
-	[oracle@localhost ~]$ export ENDPOINT=containerengine.us-phoenix-1.oraclecloud.com
-	[oracle@localhost ~]$ 
-	[oracle@localhost ~]$ # Retrieve and save the kubeconfig
-	[oracle@localhost ~]$ ~/get-kubeconfig.sh ocid1.cluster.oc1.phx.aaaaaaaaae2tqnrtmm4gumjsdoobvha3dgmtghc2tqzjtknrshbqttmm4amrmmyd > ~/kubeconfig
-	[oracle@localhost ~]$  
-	[oracle@localhost ~]$ # Use the kubeconfig with kubectl commands
-	[oracle@localhost ~]$ export KUBECONFIG=~/kubeconfig
-	[oracle@localhost ~]$ kubectl get nodes
+	$ mkdir -p $HOME/.kube
+	$ oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.phx.aaaaaaaaafrwkyrzge4doyrsga3gkobvgy4wey3egntdoolchcrtkztcmmyg --file $HOME/.kube/config
+	$
+	$ kubectl get nodes
 	NAME              STATUS    ROLES     AGE       VERSION
 	129.146.103.156   Ready     node      1d        v1.9.7
 	129.146.133.192   Ready     node      1d        v1.9.7
