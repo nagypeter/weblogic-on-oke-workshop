@@ -320,7 +320,7 @@ Click **Create Subnet** to create the subnet for the second worker node.
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-2*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-2*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.11.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -339,7 +339,7 @@ Click **Create Subnet** to create the subnet for the third worker node.
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-3*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-3*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.12.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -355,7 +355,7 @@ Click **Create**.
 
 Now your subnet list should like the this:
 
-![alt text](images/032.oci.create.worker2.subnet.png)
+![alt text](images/034.oci.subnets.list.png)
 
 ##### Create Cluster #####
 
