@@ -106,7 +106,7 @@ Enter the following:
 - **Create in Compartment:** Leave as is.
 - **Name:** A friendly name for the cloud network. E.g. *VCN-Cluster-1*
 - **Create Virtual Cloud Network Only:** Make sure this radio button is selected.
-- **CIDR Block:** A single, contiguous CIDR block for the cloud network. You cannot change this value later.
+- **CIDR Block:** A single, contiguous CIDR block for the cloud network. `10.0.0.0/16`. You cannot change this value later.
 - **DNS Resolution:** Select the Use DNS Hostnames in this VCN checkbox.
 - **DNS Label:** Specify a DNS label for the VCN.  Basically the Console will generate one for you. The dialog box automatically displays the corresponding DNS Domain Name for the VCN (<VCN DNS label>.oraclevcn.com).
 - **Tags:** Optionally, you can apply tags.
@@ -247,8 +247,8 @@ Each subnet in a VCN exists in a single availability domain and consists of a co
 
 In this scenario 5 subnets are required.
 
-- 3 subnets will be used to deploy (3) worker nodes. Each one should of those subnets should be in a different Availability Domain.
-- 2 subnets will be used for hosting load balancers. Each of those should be in a different availability domain.
+- 3 subnets will be used to deploy (3) worker nodes. Each one should of those subnets should be in a different(!) Availability Domain.
+- 2 subnets will be used for hosting load balancers. Each of those should be in a different(!) availability domain.
 
 First create for the loadbalancers.
 
@@ -261,7 +261,7 @@ In the Create Subnet dialog box, you specify the resources to associate with the
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *cluster-1-loadbalancers-1*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. Select availability domain. In our example it is *PHX-AD-1*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.20.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -280,7 +280,7 @@ Now repeate the subnet creation but use different name, CIDR, DNS label and avai
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *cluster-1-loadbalancers-2*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-2*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. Select different availability domain for second loadbalancer subnet. In our example it is *PHX-AD-2*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.21.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -301,7 +301,7 @@ Click **Create Subnet**.
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-1*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-1*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. Select different availability for all worker node subnet. In our example the first is *PHX-AD-1*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.10.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -320,7 +320,7 @@ Click **Create Subnet** to create the subnet for the second worker node.
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-2*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-2*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. Select different availability for all worker node subnet. In our example it is *PHX-AD-2*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.11.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -339,7 +339,7 @@ Click **Create Subnet** to create the subnet for the third worker node.
 Enter the following:
 
 - **Name:** A friendly name for the subnet. For example: *worker-subnet-3*
-- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. In our example it is *PHX-AD-3*.
+- **Availability Domain:** The availability domain for the subnet. Any instances you later launch into this subnet will also go into this availability domain. Select different availability for all worker node subnet. In our example it is *PHX-AD-3*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.12.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -360,6 +360,31 @@ Now your subnet list should like the this:
 ##### Create Cluster #####
 
 Now you have all the necessary resources to create OKE cluster. First specify details for the cluster (for example, the Kubernetes version to install on master nodes). Having defined the cluster, you typically specify details for different node pools in the cluster (for example, the node shape, or resource profile, that determines the number of CPUs and amount of memory assigned to each worker node). Note that although you will usually define node pools immediately when defining a cluster, you don't have to. You can create a cluster with no node pools, and add node pools later.
+
+Nodes require ssh public key in order to enable ssh connection. If you have your own key pair feel free to use. But if you need to create ssh key pair execute the following command in bash. (If you set passphrase don't forget to note for later usage.):
+
+	$ ssh-keygen
+	Generating public/private rsa key pair.
+	Enter file in which to save the key (/home/oracle/.ssh/id_rsa):
+	Enter passphrase (empty for no passphrase):
+	Enter same passphrase again:
+	Your identification has been saved in /home/oracle/.ssh/id_rsa.
+	Your public key has been saved in /home/oracle/.ssh/id_rsa.pub.
+	The key fingerprint is:
+	SHA256:59A8ONyLBiSpliPCTDyD45OHDSd5XoNJGNSDHeKKz3o oracle@localhost.localdomain
+	The key's randomart image is:
+	+---[RSA 2048]----+
+	|.+*o.            |
+	|+o++o.           |
+	|oX =+o.          |
+	|B.%o.o.. =       |
+	|=B=+  . S *      |
+	|.=o.   . * o     |
+	|  o     o o      |
+	| .E    .         |
+	|..               |
+	+----[SHA256]-----+
+
 
 In the **Console**, open the navigation menu. Click **Containers**. Choose a Compartment you have permission to work in, and then click Clusters. Click **Create Cluster**.
 

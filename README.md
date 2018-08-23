@@ -26,7 +26,7 @@ The lab describes user interface available on June, 2018.
 
 - [Oracle Container Pipeline](tutorials/sign.up.wercker.md) account.
 - [Github ](tutorials/sign.up.github.md) account.
-- [Oracle Kubernetes Engine instance provisioned on Oracle Cloud Infrastructure.](tutorials/setup.oke.md)
+- [Oracle Kubernetes Engine instance provisioned on Oracle Cloud Infrastructure.](tutorials/setup.oke.md) (Approximately 30 minutes)
 
 ### The topics to be covered in this hands-on session are: ###
 
