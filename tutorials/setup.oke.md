@@ -1,4 +1,5 @@
 # Technical Fast Start to create Oracle Container Engine for Kubernetes (OKE) on Oracle Cloud Infrastructure (OCI) #
+	# Technical Fast Start to create Oracle Container Engine for Kubernetes (OKE) on Oracle Cloud Infrastructure (OCI) #
 
 Oracle Cloud Infrastructure Container Engine for Kubernetes is a fully-managed, scalable, and highly available service that you can use to deploy your containerized applications to the cloud. Use Container Engine for Kubernetes (sometimes abbreviated to just OKE) when your development team wants to reliably build, deploy, and manage cloud-native applications. You specify the compute resources that your applications require, and Container Engine for Kubernetes provisions them on Oracle Cloud Infrastructure in an existing OCI tenancy.
 
@@ -360,31 +361,6 @@ Now your subnet list should like the this:
 ##### Create Cluster #####
 
 Now you have all the necessary resources to create OKE cluster. First specify details for the cluster (for example, the Kubernetes version to install on master nodes). Having defined the cluster, you typically specify details for different node pools in the cluster (for example, the node shape, or resource profile, that determines the number of CPUs and amount of memory assigned to each worker node). Note that although you will usually define node pools immediately when defining a cluster, you don't have to. You can create a cluster with no node pools, and add node pools later.
-
-Nodes require ssh public key in order to enable ssh connection. If you have your own key pair feel free to use. But if you need to create ssh key pair execute the following command in bash. (If you set passphrase don't forget to note for later usage.):
-
-	$ ssh-keygen
-	Generating public/private rsa key pair.
-	Enter file in which to save the key (/home/oracle/.ssh/id_rsa):
-	Enter passphrase (empty for no passphrase):
-	Enter same passphrase again:
-	Your identification has been saved in /home/oracle/.ssh/id_rsa.
-	Your public key has been saved in /home/oracle/.ssh/id_rsa.pub.
-	The key fingerprint is:
-	SHA256:59A8ONyLBiSpliPCTDyD45OHDSd5XoNJGNSDHeKKz3o oracle@localhost.localdomain
-	The key's randomart image is:
-	+---[RSA 2048]----+
-	|.+*o.            |
-	|+o++o.           |
-	|oX =+o.          |
-	|B.%o.o.. =       |
-	|=B=+  . S *      |
-	|.=o.   . * o     |
-	|  o     o o      |
-	| .E    .         |
-	|..               |
-	+----[SHA256]-----+
-
 
 In the **Console**, open the navigation menu. Click **Containers**. Choose a Compartment you have permission to work in, and then click Clusters. Click **Create Cluster**.
 
