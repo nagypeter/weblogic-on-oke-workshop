@@ -19,9 +19,15 @@ In order to have permission to access the Kubernetes cluster, you need to author
 
 ![alt text](images/deploy.weblogic/01.user.ocid.information.png)
 
-Then execute the role binding command:
+Then execute the role binding command using your OCID:
 
 	kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=<YOUR_USER_OCID>
+
+For example:
+
+	$ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=ocid1.user.oc1..aaaaaaaap6s7dzkleipjc7cvidmn64sk5o6c33dbfrcq2sbj7vzi2f3ucola
+	clusterrolebinding "my-cluster-admin-binding" created
+
 
 #### Set up the NFS server ####
 
@@ -123,6 +129,7 @@ Save the changes and restart NFS service.
 
 Type **exit** to exit as *root* and type **exit** again to end the *ssh* session.
 
+	[root]$ exit
 	[opc]$ exit
 
 ###### Node2 - NFS client ######
@@ -445,21 +452,20 @@ Open and modify the following parameters in the *create-weblogic-operator-inputs
 | Parameter name                        | Value                                                                  | Note                                                                       |
 |---------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------------|
 | targetNamespaces                      | domain1                                                                |                                                                            |
-| weblogicOperatorImage                 | oracle/weblogic-kubernetes-operator:1.0 | |
-| externalRestOption                    | SELF_SIGNED_CERT                                                       |                                                                            |
-| externalSans                          | IP:129.146.103.156                                                     | Node1 - NFS server public IP address                                       |
+| weblogicOperatorImage                 | oracle/weblogic-kubernetes-operator:1.0 |  | |
+
 
 Save the changes. Open and modify the following parameters in the *create-weblogic-domain-inputs.yaml* input file:
 
 | Parameter name            | Value                               | Note |
 |---------------------------|-------------------------------------|------|
-| domainUID                 | domain1                             |      |
-| weblogicDomainStoragePath | /scratch/external-domain-home/pv001 |      |
+| domainUID                 | domain1                             | uncomment if neccessary |
+| weblogicDomainStoragePath | /scratch/external-domain-home/pv001 | uncomment if neccessary |
 | t3PublicAddress           | 0.0.0.0                             |      |
 | exposeAdminT3Channel      | true                                |      |
 | exposeAdminNodePort       | true                                |      |
 | namespace                 | domain1                             |      |
-|loadBalancer               | TRAEFIK                             |      |
+|loadBalancer               | TRAEFIK                             | it should be the default |
 
 Save the changes.
 
@@ -478,7 +484,8 @@ This demo domain is configured to be run in the namespace *domain1*. To create n
 
 The username and password credentials for access to the Administration Server must be stored in a Kubernetes secret in the same namespace that the domain will run in. The script does not create the secret in order to avoid storing the credentials in a file. To create the secret for this demo, issue the following command (you can change the password below, but don't forget later):
 
-	kubectl -n domain1 create secret generic domain1-weblogic-credentials username=weblogic password=welcome1
+	kubectl -n domain1 create secret generic domain1-weblogic-credentials --from-literal=username=weblogic --from-literal=password=welcome1
+
 
 Create output directory for the operator and domain scripts.
 
@@ -486,7 +493,7 @@ Create output directory for the operator and domain scripts.
 
 Finally, run the create operator script first, pointing it at your inputs file and the output directory. The best to execute in the locally cloned `weblogic-kubernetes-operator/kubernetes` folder:
 
-	./create-weblogic-operator.sh -i create-weblogic-operator-job-inputs.yaml -o /PATH_TO/weblogic-output-directory
+	./create-weblogic-operator.sh -i create-weblogic-operator-inputs.yaml -o /PATH_TO/weblogic-output-directory
 	Input parameters being used
 	export version="create-weblogic-operator-inputs-v1"
 	export serviceAccount="weblogic-operator"
@@ -567,7 +574,7 @@ Check the pod status in *weblogic-operator* namespace:
 
 The operator is running then execute the similar command for the WebLogic domain creation:
 
-	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml  -o /u01/content/weblogic-output-directory
+	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml -o /PATH_TO/weblogic-output-directory
 	Input parameters being used
 	export version="create-weblogic-domain-inputs-v1"
 	export adminPort="7001"
@@ -676,33 +683,14 @@ To check the status of the WebLogic cluster, run this command:
 
 You have to see four running pods similar to the result above.
 
-Because the WebLogic cluster is exposed to the external world using the external IP addresses of the nodes you can use any of the node’s public IP addresses to access the Administration Console. The Administration console port is configured in *create-weblogic-domain-inputs.yaml* and by default 30701. To check run the following command which shows detailed information including NodePort configuration of the admin server pod:
+The WebLogic Administration server console is exposed to the external world using NodePort. To get the external IP address of the node where the pod is deployed execute the following command which returns only the Node information from pod description:
 
-	kubectl describe service -n domain1 domain1-admin-server
-	Name:                     domain1-admin-server
-	Namespace:                domain1
-	Labels:                   weblogic.createdByOperator=true
-	                          weblogic.domainName=base_domain
-	                          weblogic.domainUID=domain1
-	                          weblogic.resourceVersion=domain-v1
-	                          weblogic.serverName=admin-server
-	Annotations:              service.alpha.kubernetes.io/tolerate-unready-endpoints=true
-	Selector:                 weblogic.createdByOperator=true,weblogic.domainUID=domain1,weblogic.serverName=admin-server
-	Type:                     NodePort
-	IP:                       10.96.219.0
-	Port:                     <unset>  7001/TCP
-	TargetPort:               7001/TCP
-	NodePort:                 <unset>  30701/TCP
-	Endpoints:                10.244.3.5:7001
-	Session Affinity:         None
-	External Traffic Policy:  Cluster
-	Events:                   <none>
+		$ kubectl describe pod -n domain1 domain1-admin-server | grep Node:
+		Node:               129.146.133.192/10.0.12.2
 
-Find the NodePort parameter. It should be the default 30701.
+The first IP address is the external (public) IP address of the node. If you haven't changed the domain configuration then the console port is 30701. Construct the Administration Console's url and open in a browser:
 
-Use one of the node's public IP address and construct the Administration Console url:
-
-**http://<NODE\_X\_IP\_PUBLIC\_ADDRESS>:30701/console**
+**http://<ADMIN\_SERVER\_POD\_NODE\_PUBLIC\_IP\_ADDRESS>:30701/console**
 
 ![alt text](images/deploy.weblogic/11.weblogic.console.url.png)
 
