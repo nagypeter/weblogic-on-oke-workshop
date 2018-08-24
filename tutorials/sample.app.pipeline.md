@@ -11,7 +11,7 @@ The key components of Oracle Pipelines:
 
 + **Step** is self-contained bash script or compiled binary for accomplishing specific automation tasks.
 + **Pipelines** are a series of steps that are triggered on a git push or the completion of another pipeline.
-+ **Workflows** are a set of chained and branched pipelines that allow you to form multi-stage, multi-branch complex CI/CD flows that take your project from code to production. 
++ **Workflows** are a set of chained and branched pipelines that allow you to form multi-stage, multi-branch complex CI/CD flows that take your project from code to production.
 + All Wercker pipelines execute inside a **Docker container** and every build artefact can be a Docker container.
 
 ### Prerequisites ###
@@ -61,7 +61,7 @@ The repository already contains a necessary `wercker.yml` but before the executi
 
 | Key            | Value                                                                     | Note for WebLogic on OKE                                                                                                                                         |
 |----------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| WLS_IP         | The Public IP address of the loadbalancer configured for WebLogic Domain. |  `kubectl get pod -n <domain_namespace> -o wide` Use any Node IP address.                                                     |
+| WLS_IP         | The Public IP address of the loadbalancer configured for WebLogic Domain. |  `kubectl get pod -n <domain_namespace> -o wide` Node IP address belongs to *domain1-admin-server* pod.                                                     |
 | WLS_ADMIN_PORT | The administration port of the WebLogic Admin server.                     | If you haven't modified the default it should be 30701. Or run `kubectl get service -n <domain_namespace> <domainUID>-admin-server` Find the port number after colon. |
 | WLS_ADMIN      | WebLogic administrator's username.                                        |                                                                                                                                                                  |
 | WLS_PASSWORD   | WebLogic administrator's password.                                        |                                                                                                                                                                  |
@@ -78,7 +78,7 @@ For example.
 	domain1-cluster-1-traefik-778bc994f7-vps9h   1/1       Running   0          12d       10.244.4.27   129.146.166.187
 	domain1-managed-server1                      1/1       Running   0          12d       10.244.5.7    129.146.133.192
 
-For example in the result above it can be any IP address starting with 129.146.x.x.
+In the result above you need the traefik loadbalancer (domain1-cluster-1-traefik-778bc994f7-vps9h) IP address.
 
 To determine the port number execute:
 
@@ -124,9 +124,9 @@ During the pipeline execution you can see the currently running step. You can re
 
 ![alt text](images/deploy.sample/15.step.details.png)
 
-When the workflow is completed the application is available on your WebLogic domain. 
+When the workflow is completed the application is available on your WebLogic domain.
 
-To open the application you can use any of the public IP address of the nodes. For example what you have defined for WLS_IP as environment variable in Oracle Pipelines.
+To open the application you can use the loadbalancer (domain1-cluster-1-traefik-xxxxxx) IP address of the nodes. For example what you have defined for WLS_IP as environment variable in Oracle Pipelines.
 
 The port number for the loadbalancer can be determined to get information about the service of the loadbalancer. If you setup your WebLogic on OKE environment following [this tutorial](setup.weblogic.kubernetes.md) then TRAEFIK loadbalancer is deployed and the default port is 30305. To check the port number execute the following `kubectl` command.
 
@@ -146,6 +146,6 @@ Putting together the pieces the application URL is the following: **http://<NODE
 
 ![alt text](images/deploy.sample/16.sample.application.png)
 
-Test the application. You can also check the deployed application on the WebLogic Administration console. Open the console using any of the Node IP address, WebLogic port number (30701 or what you get during pipeline setup) and appending */console*. Log in using administrator's credentials and click **Deployments**.
+Test the application. You can also check the deployed application on the WebLogic Administration console. Open the console using the loadbalancer (domain1-cluster-1-traefik-778bc994f7-vps9h) Node IP address, WebLogic port number (30701 or what you get during pipeline setup) and appending */console*. Log in using administrator's credentials and click **Deployments**.
 
 ![alt text](images/deploy.sample/17.wls.admin.console.png)

@@ -28,6 +28,29 @@ For example:
 	$ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=ocid1.user.oc1..aaaaaaaap6s7dzkleipjc7cvidmn64sk5o6c33dbfrcq2sbj7vzi2f3ucola
 	clusterrolebinding "my-cluster-admin-binding" created
 
+#### Accept Licence Agreement to use `store/oracle/weblogic:12.2.1.3` image from Docker Store ####
+
+If you have not used the base image [`store/oracle/weblogic:12.2.1.3`](https://store.docker.com/images/oracle-weblogic-server-12c) before, you will need to visit the [Docker Store web interface](https://store.docker.com/images/oracle-weblogic-server-12c) and accept the license agreement before the Docker Store will give you permission to pull that image.
+
+Open [https://store.docker.com/images/oracle-weblogic-server-12c](https://store.docker.com/images/oracle-weblogic-server-12c) in a new browser and click **Log In**.
+
+![alt text](images/deploy.weblogic/05.docker.store.weblogic.png)
+
+Enter your account details and click **Login**.
+
+![](images/build.operator/02.docker.store.login.png)
+
+Click **Proceed to Checkout**.
+
+![alt text](images/deploy.weblogic/07.docker.store.weblogic.checkout.png)
+
+Complete your contact information and accept agreements. Click **Get Content**.
+
+![alt text](images/deploy.weblogic/08.docker.store.weblogic.get.content.png)
+
+Now you are ready to pull the  image on docker enabled host after authenticating yourself in Docker Hub using your Docker Hub credentials.
+
+![alt text](images/deploy.weblogic/09.docker.store.weblogic.png)
 
 #### Set up the NFS server ####
 
@@ -127,9 +150,32 @@ Save the changes and restart NFS service.
 
 	[root]$ service nfs-server start
 
-Type **exit** to exit as *root* and type **exit** again to end the *ssh* session.
+Type **exit** to end *root* session.
 
 	[root]$ exit
+
+Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` image from Docker store. Before issue pull command you have to login to Docker.
+
+	$ docker login
+	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+	Username: <YOUR_DOCKER_USERNAME>
+	Password: <YOUR_DOCKER_PASSWORD>
+	Login Succeeded
+	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
+	Trying to pull repository docker.io/store/oracle/weblogic ...
+	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
+	9fd8609e6e4d: Pull complete
+	eac7b4a33e34: Pull complete
+	b6f7d13c859b: Pull complete
+	e0ca246b2272: Pull complete
+	7ba4d6bfba43: Pull complete
+	5e3b8c4731f0: Pull complete
+	97623ceb6339: Pull complete
+	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
+	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
+
+Node1 preparation is done type **exit** again to end the *ssh* session.
+
 	[opc]$ exit
 
 ###### Node2 - NFS client ######
@@ -195,9 +241,32 @@ Restart the NFS service.
 
 	[root]$ service nfs-server restart
 
-Exit as *root* and end the session.
+Type **exit** to end *root* session.
 
-	[root]$ exit
+		[root]$ exit
+
+Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` image from Docker store. Before issue pull command you have to login to Docker.
+
+	$ docker login
+	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+	Username: <YOUR_DOCKER_USERNAME>
+	Password: <YOUR_DOCKER_PASSWORD>
+	Login Succeeded
+	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
+	Trying to pull repository docker.io/store/oracle/weblogic ...
+	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
+	9fd8609e6e4d: Pull complete
+	eac7b4a33e34: Pull complete
+	b6f7d13c859b: Pull complete
+	e0ca246b2272: Pull complete
+	7ba4d6bfba43: Pull complete
+	5e3b8c4731f0: Pull complete
+	97623ceb6339: Pull complete
+	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
+	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
+
+Node2 preparation is done type **exit** again to end the *ssh* session.
+
 	[opc]$ exit
 
 ###### Node3 - NFS client ######
@@ -263,155 +332,33 @@ Restart the NFS service.
 
 	[root]$ service nfs-server restart
 
-Exit as *root* and end the session.
+Type **exit** to end *root* session.
 
 	[root]$ exit
-	[opc]$ exit
 
-#### Accept Licence Agreement to use `store/oracle/weblogic:12.2.1.3` image from Docker Store ####
-
-If you have not used the base image [`store/oracle/weblogic:12.2.1.3`](https://store.docker.com/images/oracle-weblogic-server-12c) before, you will need to visit the [Docker Store web interface](https://store.docker.com/images/oracle-weblogic-server-12c) and accept the license agreement before the Docker Store will give you permission to pull that image.
-
-Open [https://store.docker.com/images/oracle-weblogic-server-12c](https://store.docker.com/images/oracle-weblogic-server-12c) in a new browser and click **Log In**.
-
-![alt text](images/deploy.weblogic/05.docker.store.weblogic.png)
-
-Enter your account details and click **Login**.
-
-![](images/build.operator/02.docker.store.login.png)
-
-Click **Proceed to Checkout**.
-
-![alt text](images/deploy.weblogic/07.docker.store.weblogic.checkout.png)
-
-Complete your contact information and accept agreements. Click **Get Content**.
-
-![alt text](images/deploy.weblogic/08.docker.store.weblogic.get.content.png)
-
-Now you are ready to pull the  image on docker enabled host after authenticating yourself in Docker Hub using your Docker Hub credentials.
-
-![alt text](images/deploy.weblogic/09.docker.store.weblogic.png)
-
-#### Upload the WebLogic Docker images to the OCI Registry ####
-
-##### Get the official WebLogic image from Docker Store #####
-The process to move WebLogic image from Docker Store to your OCIR first log in to Docker Store using `docker` CLI and pull the `store/oracle/weblogic:12.2.1.3` image to your desktop.
+Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` image from Docker store. Before issue pull command you have to login to Docker.
 
 	$ docker login
 	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
 	Username: <YOUR_DOCKER_USERNAME>
 	Password: <YOUR_DOCKER_PASSWORD>
 	Login Succeeded
-	$ docker pull store/oracle/weblogic:12.2.1.3
-	12.2.1.3: Pulling from store/oracle/weblogic
-	4040fe120662: Already exists
-	5788a5fddf0e: Already exists
-	88fc159ecf27: Already exists
-	138d86176392: Already exists
-	c8bbee357786: Pull complete
-	8bfb4a53e381: Pull complete
-	76a4c7bc88d8: Pull complete
-	Digest: sha256:e3e48963b360e6d7ce86659719487f568c89249979965210b48e979d7b262e1a
-	Status: Downloaded newer image for store/oracle/weblogic:12.2.1.3
-	[oracle@localhost ~]$ docker pull store/oracle/weblogic:12.2.1.3
-	12.2.1.3: Pulling from store/oracle/weblogic
-	Digest: sha256:e3e48963b360e6d7ce86659719487f568c89249979965210b48e979d7b262e1a
-	Status: Image is up to date for store/oracle/weblogic:12.2.1.3
-	$
+	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
+	Trying to pull repository docker.io/store/oracle/weblogic ...
+	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
+	9fd8609e6e4d: Pull complete
+	eac7b4a33e34: Pull complete
+	b6f7d13c859b: Pull complete
+	e0ca246b2272: Pull complete
+	7ba4d6bfba43: Pull complete
+	5e3b8c4731f0: Pull complete
+	97623ceb6339: Pull complete
+	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
+	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
 
-##### Create OCI Repository #####
+Node3 preparation is done type **exit** again to end the *ssh* session.
 
-In the OCI Console, open the navigation menu. Select **Developer Services** and click **Registry**.
-
-![alt text](images/build.operator/33.select.registry.png)
-
-Click *Create Repository*.
-
-![alt text](images/deploy.weblogic/20.create.repository.png)
-
-In the Add Repository dialog box, specify details for the new repository.
-
-+ Repository name: weblogic
-+ Public: select to make the repository available without authentication.
-
-Click **Submit**.
-
-![alt text](images/deploy.weblogic/21.repository.details.png)
-
-##### Get Authentication Token to use Oracle Cloud Infrastructure Registry (OCIR) #####
-
-Oracle Cloud Infrastructure Registry (OCIR) has native support for Docker Registry v2 token authentication. Before you can push and pull Docker images to and from Oracle Cloud Infrastructure Registry, you must already have an Oracle Cloud Infrastructure username and an auth token. In the next step you will generate your token.
-
-On the console click the user icon on top-rigth corner and select **User Settings**. On the user details page select **Auth Tokens** in the left menu. Click **Generate Token**.
-
-![alt text](images/deploy.weblogic/22.auth.token.page.png)
-
-Enter a friendly description for the auth token and click **Generate Token**.
-
-![alt text](images/deploy.weblogic/26.oci.user.auth.token.generate.png)
-
-The new auth token is displayed. **Copy** the auth token immediately to a secure location from where you can retrieve it later, because you won't see the auth token again in the Console. **Close** the Generate Token dialog.
-
-![alt text](images/deploy.weblogic/27.oci.user.auth.token.generate.png)
-
-##### Upload WebLogic image to OCI Repository #####
-
-Create tag (name) of the image which reflects the full container repository (OCIR) path including the registry where you want to push the image. In case of OCI it is the following format: `<region-code>.ocir.io/<tenancy-name>/<repos-name>/<image-name>:<tag>`.
-
-- **<region-code>** is one of **fra** (Frankfurt), **iad** (Ashburn), **lhr** (London), or **phx** (Phoenix).
-- **ocir.io** is the Oracle Cloud Infrastructure Registry name.
-- **<tenancy-name>** is the name of the tenancy that owns the repository to which you want to push - the image.
-- **<repo-name>** (if specified) is the name of a repository to which you want to push the image. You don't need to specify this now.
-- **<image-name>** is the name you want to give the image in Oracle Cloud Infrastructure Registry. In this case recommended to leave *weblogic*.
-- **<tag>** is an image tag you want to give the image in Oracle Cloud Infrastructure Registry. Use the same version number *12.2.1.3*.
-
-Apply the new tag for WebLogic image as follow but don't forget to construct your image name.
-
-**docker tag store/oracle/weblogic:12.2.1.3 <region-code\>.ocir.io/<tenancy-name\>/<image-name\>:<tag\>**
-
-For example:
-
-	$ docker tag store/oracle/weblogic:12.2.1.3 phx.ocir.io/weblogick8s/weblogic:12.2.1.3
-
-Log in to Oracle Cloud Infrastructure Registry (OCIR) by entering `docker login <region-code>.ocir.io`, where:
-
-| Region Code | Region Name |
-|-------------|-------------|
-| fra         | Frankfurt   |
-| iad         | Ashburn     |
-| lhr         | London      |
-| phx         | Phoenix     |
-
-For example:
-
-	$ docker login phx.ocir.io
-	Username: weblogick8s/jdoe@acme.com
-	Password:
-	Login Succeeded
-
-When prompted, enter your username in the format `<tenancy_name>/<username>`. For example, **weblogick8s/jdoe@acme.com**. When password is prompted, enter the auth token you generated and copied earlier.
-
-Push the Docker image from the client machine to Oracle Cloud Infrastructure Registry by entering:
-
-	$ docker push phx.ocir.io/weblogick8s/weblogic:12.2.1.3
-	The push refers to repository [phx.ocir.io/weblogick8s/weblogic]
-	4040fe120662: Pushed
-	5788a5fddf0e: Pushed
-	88fc159ecf27: Pushed
-	138d86176392: Pushed
-	c8bbee357786: Pushed
-	8bfb4a53e381: Pushed
-	76a4c7bc88d8: Pushed
-	12.2.1.3: digest: sha256:e40f7d4a8798eda625730d69392cc6c2b529027acd4cff0c93877885b5eb7378 size: 1991
-
-When the push completed check the WebLogic image in your OCIR repository.
-In the OCI Console, open the navigation menu. Select **Developer Services** and click **Registry**.
-
-![alt text](images/build.operator/33.select.registry.png)
-
-Select the `weblogic` repository and click the 12.2.1.3 *tag*.
-
-![alt text](images/deploy.weblogic/10.ocir.weblogic.image.check.png)
+	[opc]$ exit
 
 #### Modify the operator and domain configuration YAML files ####
 
@@ -429,23 +376,7 @@ Most likely you already cloned locally the WebLogic Kubernetes Operator source r
 
 Change directory to `weblogic-kubernetes-operator/kubernetes` where the parameters input files located.
 
-	cd weblogic-kubernetes-operator/kubernetes/internal
-
-Modify the **image** field in the *create-weblogic-domain-job-template.yaml* file to the corresponding Docker repository image name in the OCIR. (line ~#278). The repository and image name what you created in the previous steps to tag and upload image to your OCI Registry.
-
-**image: <OCI\_REGION>.ocir.io/<YOUR\_OCI\_TENANCY>/weblogic:12.2.1.3**
-
-For example:
-
-	image: phx.ocir.io/weblogiconk8s/weblogic:12.2.1.3
-
-Save and close *create-weblogic-domain-job-template.yaml* file. Open *domain-custom-resource-template.yaml* and modify here the WebLogic image registry location too. (line ~#24)
-
-	image: <OCI_REGION>.ocir.io/<YOUR_OCI_TENANCY>/weblogic:12.2.1.3
-
-Save and close *domain-custom-resource-template.yaml* file. Change directory one level up into `$SRC/weblogic-kubernetes-operator/kubernetes`
-
-	cd ..
+	cd weblogic-kubernetes-operator/kubernetes
 
 Open and modify the following parameters in the *create-weblogic-operator-inputs.yaml* input file:
 
@@ -471,27 +402,11 @@ Save the changes.
 
 #### Deploy WebLogic Kubernetes Operator and WebLogic Domain ####
 
-You are almost there, but before execute the provided scripts you need create necessary Kubernetes resources required by the operator and domain.
-
-
-This demo operator is configured to be run in the namespace *weblogic-operator*. To create namespace *weblogic-operator*, execute this command:
-
-	kubectl create namespace weblogic-operator
-
-This demo domain is configured to be run in the namespace *domain1*. To create namespace *domain1*, execute this command:
-
-	kubectl create namespace domain1
-
-The username and password credentials for access to the Administration Server must be stored in a Kubernetes secret in the same namespace that the domain will run in. The script does not create the secret in order to avoid storing the credentials in a file. To create the secret for this demo, issue the following command (you can change the password below, but don't forget later):
-
-	kubectl -n domain1 create secret generic domain1-weblogic-credentials --from-literal=username=weblogic --from-literal=password=welcome1
-
-
 Create output directory for the operator and domain scripts.
 
 	mkdir -p /PATH_TO/weblogic-output-directory
 
-Finally, run the create operator script first, pointing it at your inputs file and the output directory. The best to execute in the locally cloned `weblogic-kubernetes-operator/kubernetes` folder:
+First run the create operator script, pointing it at your inputs file and the output directory. The best to execute in the locally cloned `weblogic-kubernetes-operator/kubernetes` folder:
 
 	./create-weblogic-operator.sh -i create-weblogic-operator-inputs.yaml -o /PATH_TO/weblogic-output-directory
 	Input parameters being used
@@ -572,7 +487,11 @@ Check the pod status in *weblogic-operator* namespace:
 	NAME                                 READY     STATUS    RESTARTS   AGE
 	weblogic-operator-58d944d448-jxbph   1/1       Running   0          1m
 
-The operator is running then execute the similar command for the WebLogic domain creation:
+Before execute the last domain creation script you have to create the WebLogic admin credentials. The username and password credentials for access to the Administration Server must be stored in a Kubernetes secret in the same namespace that the domain will run in. The script does not create the secret in order to avoid storing the credentials in a file. To create the secret for this demo, issue the following command (you can change the password below, but don't forget later):
+
+	kubectl -n domain1 create secret generic domain1-weblogic-credentials --from-literal=username=weblogic --from-literal=password=welcome1
+
+Now execute a similar command for the WebLogic domain creation:
 
 	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml -o /PATH_TO/weblogic-output-directory
 	Input parameters being used
@@ -683,14 +602,18 @@ To check the status of the WebLogic cluster, run this command:
 
 You have to see four running pods similar to the result above.
 
-The WebLogic Administration server console is exposed to the external world using NodePort. To get the external IP address of the node where the pod is deployed execute the following command which returns only the Node information from pod description:
+The WebLogic Administration server console is exposed to the external world using NodePort. To get the external IP address of the node where the admin server pod is deployed execute the following command which returns external (public) IP addresses belong to pods:
 
-		$ kubectl describe pod -n domain1 domain1-admin-server | grep Node:
-		Node:               129.146.133.192/10.0.12.2
+	$ kubectl get pod -n domain1 -o wide
+	NAME                                         READY     STATUS    RESTARTS   AGE       IP           NODE
+	domain1-admin-server                         1/1       Running   0          32m       10.244.2.5   129.146.133.192
+	domain1-cluster-1-traefik-55cbccb8dd-srpcb   1/1       Running   0          32m       10.244.2.4   129.146.133.192
+	domain1-managed-server1                      0/1       Running   4          29m       10.244.0.6   129.146.88.147
+	domain1-managed-server2                      0/1       Running   0          29m       10.244.1.4   129.146.40.233
 
-The first IP address is the external (public) IP address of the node. If you haven't changed the domain configuration then the console port is 30701. Construct the Administration Console's url and open in a browser:
+Find the Node IP address belongs to the loadbalancer (*domain1-cluster-1-traefik-xxxxxxx*) pod. If you haven't changed the domain configuration then the console port is 30701. Construct the Administration Console's url and open in a browser:
 
-**http://<ADMIN\_SERVER\_POD\_NODE\_PUBLIC\_IP\_ADDRESS>:30701/console**
+**http://<LOADBALANCER\_POD\_NODE\_PUBLIC\_IP\_ADDRESS>:30701/console**
 
 ![alt text](images/deploy.weblogic/11.weblogic.console.url.png)
 
