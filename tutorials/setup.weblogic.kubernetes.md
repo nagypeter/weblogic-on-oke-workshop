@@ -392,7 +392,6 @@ Save the changes. Open and modify the following parameters in the *create-weblog
 |---------------------------|-------------------------------------|------|
 | domainUID                 | domain1                             | uncomment if neccessary |
 | weblogicDomainStoragePath | /scratch/external-domain-home/pv001 | uncomment if neccessary |
-| t3PublicAddress           | 0.0.0.0                             |      |
 | exposeAdminT3Channel      | true                                |      |
 | exposeAdminNodePort       | true                                |      |
 | namespace                 | domain1                             |      |
