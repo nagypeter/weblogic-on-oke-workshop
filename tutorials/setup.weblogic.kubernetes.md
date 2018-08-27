@@ -148,7 +148,7 @@ Add private IP addresses of Node2 and Node3.
 
 Save the changes and restart NFS service.
 
-	[root]$ service nfs-server start
+	[root]$ service nfs-server restart
 
 Type **exit** to end *root* session.
 
