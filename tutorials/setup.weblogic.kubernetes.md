@@ -9,7 +9,7 @@ This tutorial is based on the official [Oracle WebLogic Kubernetes Operator](htt
 - [Oracle Cloud Infrastructure](https://cloud.oracle.com/en_US/cloud-infrastructure) enabled account.
 - Running [Container Engine for Kubernetes (OKE)](setup.oke.md) cluster.
 - [Oracle WebLogic Kubernetes Operator](create.weblogic.operator.md) image uploaded to Container Registry (OCIR).
-- Desktop with `Docker 17.03.1.ce` and `kubectl` installed. `kubectl` has to be configured to access to the Kubernetes Cluster.
+- Desktop with `kubectl` installed. `kubectl` has to be configured to access to the Kubernetes Cluster.
 
 ## Prepare the WebLogic Kubernetes Operator Environment
 
