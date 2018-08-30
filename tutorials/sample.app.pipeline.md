@@ -37,7 +37,9 @@ Enter or copy the *https://github.com/nagypeter/angular-java-creditscore.git* re
 
 First create your Oracle Pipelines application. Oracle Pipelines acts as continuous integration tool which will produce the build artifact and deploy your sample application to WebLogic Domain.
 
-Sign in to Oracle Pipelines and click **Create your first application** button or the **+Create** dropdown list and select *Application*.
+[Sign in to Oracle Pipelines (former Wercker)](https://app.wercker.com/) and click **Create your first application** button or the **+Create** dropdown list and select *Application*. 
+
+NOTE! If you need to sign up to Oracle Pipelines do it with your Github account. Click the **LOG IN WITH GITHUB** button and authorize Oracle PipelineS application for your Github account. You can revoke Oracle Pipelines (Wercker)'s authorization request anytime using your Github's profile settings.
 
 ![alt text](images/build.operator/12.create.wercker.application.png)
 
