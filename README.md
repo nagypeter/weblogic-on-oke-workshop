@@ -24,14 +24,16 @@ The lab describes user interface available on June, 2018.
 
 ### Prerequisites ###
 
+- Oracle Cloud Infrastructure CLI, kubectl. [Download](https://drive.google.com/open?id=11CvOZ-j50-2q9-rrQmxpEwmQZbPMkw2a) and import the preconfigured VirtualBox image (total required space > 12 GB)
+  - [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads) if necessary.
 - [Oracle Container Pipeline](tutorials/sign.up.wercker.md) account.
 - [Github ](tutorials/sign.up.github.md) account.
-- [Oracle Kubernetes Engine instance provisioned on Oracle Cloud Infrastructure.](tutorials/setup.oke.md) (Approximately 30 minutes)
 
 ### The topics to be covered in this hands-on session are: ###
 
-1. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.md)
-2. [Create Oracle Container Pipeline to build sample JavaEE application and deploy to WebLogic running on Kubernetes ](tutorials/sample.app.pipeline.md)
+1. [Setup Oracle Kubernetes Engine instance on Oracle Cloud Infrastructure.](tutorials/setup.oke.md)
+2. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.md)
+3. [Create Oracle Container Pipeline to build sample JavaEE application and deploy to WebLogic running on Kubernetes ](tutorials/sample.app.pipeline.md)
 
 ### License ###
 Copyright (c) 2014-2018 Oracle and/or its affiliates
