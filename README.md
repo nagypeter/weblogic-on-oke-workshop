@@ -31,6 +31,14 @@ Note: in this hands on lab for demo purposes there will be only one worker node 
 - [Github ](tutorials/sign.up.github.md) account.
 - [Oracle Container Pipeline](tutorials/sign.up.wercker.md) account.
 
+#### Before you start update HOL desktop environment (VirtualBox image) ####
+
+Depending on your network connection make sure you switched ON or OFF the proxy configuration by clicking the corresponding shortcut on the desktop.
+
+After the proxy configuration double click the **Update** icon and wait until the update process complete. Hit enter when you see the *Press [Enter] to close the window* message to close the update terminal.
+
+![](tutorials/images/update.HOL.png)
+
 ### The topics to be covered in this hands-on session are: ###
 
 1. [Setup Oracle Kubernetes Engine instance on Oracle Cloud Infrastructure.](tutorials/setup.oke.md)
