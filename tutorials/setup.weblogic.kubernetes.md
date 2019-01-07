@@ -25,7 +25,7 @@ Then execute the role binding command using your OCID:
 
 For example:
 
-	$ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=ocid1.user.oc1..aaaaaaaap6s7dzkleipjc7cvidmn64sk5o6c33dbfrcq2sbj7vzi2f3ucola
+	$ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=ocid1.user.oc1..aaaaaaaa724gophmrcxxrzg3utunh3rg5ieeyyrwuqfetixdb3mhzesxmdbq
 	clusterrolebinding "my-cluster-admin-binding" created
 
 #### Accept Licence Agreement to use `store/oracle/weblogic:12.2.1.3` image from Docker Store ####
@@ -52,67 +52,18 @@ Now you are ready to pull the  image on docker enabled host after authenticating
 
 ![alt text](images/deploy.weblogic/09.docker.store.weblogic.png)
 
-#### Set up the NFS server ####
+#### Setup worker node ####
 
-The WebLogic domain must be installed into the folder that will be mounted as /shared/domain
+Before the deployment of WebLogic Operator and Domain you need to setup the worker node. Operator v1.1 requires persistent volume configured. In this case this means a folder creation in advance on the node.
 
-At this time, the WebLogic on Kubernetes domain created by the WebLogic Server Kubernetes Operator, requires a shared file system to store the WebLogic domain configuration, which MUST be accessible from all the pods across the nodes. As a workaround, you need to configure an NFS server on one node and share the file system across all the nodes.
+Also to make the deployment smoother you need to pull the official Oracle WebLogic image from Docker Store before the deployment.
 
-**Note**: Currently, we recommend that you use NFS version 3.0 for running WebLogic Server on OCI Container Engine for Kubernetes.
+Log in using `ssh` and the public IP address (!Don't forget to modify the IP address to your node's address) to the worker node:
 
-##### Retrieve node's public and private IP addresses #####
-
-Enter the following `kubectl` command to get the public IP addresses of the nodes:
-
-	$ kubectl get node
-
-The output of the command will display the nodes, similar to the following:
-
-	NAME              STATUS    ROLES     AGE       VERSION
-	129.146.103.156   Ready     node      9d        v1.9.7
-	129.146.133.192   Ready     node      9d        v1.9.7
-	129.146.166.187   Ready     node      9d        v1.9.7
-
-To get private IP addresses you need to `ssh` into every node. This requires your private (RSA) key pair of the public key what you defined during OKE creation. Execute the following command for every node:
-
-**ssh -i <YOUR\_RSA\_PRIVATE\_KEY\_LOCATION> opc@<PUBLIC\_IP\_OF\_NODE>**
-
-For example:
-
-	$ ssh -i ~/.ssh/id_rsa opc@129.146.103.156
-	The authenticity of host '129.146.103.156 (129.146.103.156)' can't be established.
-	ECDSA key fingerprint is SHA256:DjSi+nQJRgnuapgQp/zA9HisHzHjbev+jnjrBluAboo.
-	ECDSA key fingerprint is MD5:8f:80:de:8b:0c:6e:29:c3:9c:bf:ee:6a:79:63:38:39.
-	Are you sure you want to continue connecting (yes/no)? yes
-	Warning: Permanently added '129.146.103.156' (ECDSA) to the list of known hosts.
-	Oracle Linux Server 7.4
-	Last login: Sat Jun 16 10:51:32 2018 from 86.59.134.172
-	$
-
-Retrieve private IP address executing this command:
-
-	$ ip addr | grep ens3
-	2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq state UP qlen 1000
-    	inet 10.0.12.4/24 brd 10.0.12.255 scope global dynamic ens3
-
-Find the inet value. For example the private address in the example above: 10.0.12.4
-
-Repeat the query for each node. Note the IP addresses for easier usage:
-
-| Nodes:             | Public IP       | Private IP |
-|--------------------|-----------------|------------|
-| Node1 - NFS Server | 129.146.103.156 | 10.0.12.4  |
-| Node2              | 129.146.133.192 | 10.0.11.3  |
-| Node3              | 129.146.166.187 | 10.0.10.3  |
-
-
-###### Node1 - NFS server ######
-
-Log in using `ssh` to **Node1**, and set up NFS Server:
-
-	$ ssh -i ~/.ssh/id_rsa opc@129.146.103.156
-	Oracle Linux Server 7.4
-	Last login: Sat Jun 16 10:51:32 2018 from 86.59.134.172
+	$ ssh -i ~/.ssh/oow.id_rsa opc@130.61.58.999
+	Oracle Linux Server 7.5
+	Last login: Sun Jan  6 23:27:24 2019 from 46.139.97.155
+	[opc@oke-c2tcyzzmrqw-n2temrqgyyt-s54zyw2hoiq-0 ~]$
 
 Change to *root* user.
 
@@ -123,33 +74,6 @@ Create `/scratch/external-domain-home/pv001` shared directory for domain binarie
 	[root]$ mkdir -m 777 -p /scratch/external-domain-home/pv001
 	[root]$ chown -R opc:opc /scratch
 
-Modify `/etc/exports` to enable Node2, Node3 access to Node1 NFS server.
-
-	[root]$ vi /etc/exports
-
----
-
-**NOTE!** By the default the NFS server has to be installed but stopped on OKE node. If the NFS is not installed on node then run `yum install -y nfs-utils` first as super user.
-
----
-
-Add private IP addresses of Node2 and Node3.
-
-	/scratch 10.0.11.3(rw)
-	/scratch 10.0.10.3(rw)
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	"/etc/exports" 2L, 46C
-
-Save the changes and restart NFS service.
-
-	[root]$ service nfs-server restart
-
 Type **exit** to end *root* session.
 
 	[root]$ exit
@@ -161,6 +85,9 @@ Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` i
 	Username: <YOUR_DOCKER_USERNAME>
 	Password: <YOUR_DOCKER_PASSWORD>
 	Login Succeeded
+
+After the successful login pull the official WebLogic Docker image:
+
 	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
 	Trying to pull repository docker.io/store/oracle/weblogic ...
 	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
@@ -174,211 +101,19 @@ Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` i
 	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
 	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
 
-Node1 preparation is done type **exit** again to end the *ssh* session.
+The worker node preparation is done type **exit** again to end the *ssh* session.
 
 	[opc]$ exit
 
-###### Node2 - NFS client ######
+#### Prepare the operator and domain configuration YAML files ####
 
-Log in using `ssh` to **Node2** and configure NFS client:
+Customize the parameters in the input YAML files for the WebLogic cluster and WebLogic Operator. The input YAML files and scripts provided in the [WebLogic Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator) project.
 
-	$ ssh -i ~/.ssh/id_rsa opc@129.146.133.192
-	Oracle Linux Server 7.4
-	Last login: Sat Jun 16 10:51:32 2018 from 86.59.134.172
+The WebLogic Kubernetes Operator source repository can be found in the `/u01/content/weblogic-kubernetes-operator`. Open for edit the `create-weblogic-operator-inputs.yaml` parameter file using File Browser or using the following command:
 
-Change to *root* user.
+	gedit /u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-operator-inputs.yaml &
 
-	[opc]$ sudo su -
-
-Create `/scratch` shared directory.
-
-	[root]$ mkdir /scratch
-
-Edit the `/etc/fstab` file.
-
-	[root]$ vi /etc/fstab
-
-Add the internal IP address and parameters of **Node1 - NFS server**. Append as last row.
-
-	#
-	# /etc/fstab
-	# Created by anaconda on Fri Feb  9 01:25:44 2018
-	#
-	# Accessible filesystems, by reference, are maintained under '/dev/disk'
-	# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
-	#
-	UUID=7247af6c-4b59-4934-a6be-a7929d296d83 /                       xfs     defaults,_netdev,_netdev 0 0
-	UUID=897D-798C          /boot/efi               vfat    defaults,uid=0,gid=0,umask=0077,shortname=winnt,_netdev,_netdev,x-initrd.mount 0 0
-	######################################
-	## ORACLE BARE METAL CLOUD CUSTOMERS
-	##
-	## If you are adding an iSCSI remote block volume to this file you MUST
-	## include the '_netdev' mount option or your instance will become
-	## unavailable after the next reboot.
-	##
-	## Example:
-	## /dev/sdb /data1  ext4    defaults,noatime,_netdev    0   2
-	##
-	## More information:
-	## https://docs.us-phoenix-1.oraclecloud.com/Content/Block/Tasks/connectingtoavolume.htm
-	##
-	10.0.12.4:/scratch /scratch  nfs nfsvers=3 0 0
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	"/etc/fstab" 24L, 957C
-
-Save changes. Mount the shared `/scratch` directory.
-
-	[root]$ mount /scratch
-
-Restart the NFS service.
-
-	[root]$ service nfs-server restart
-
-Type **exit** to end *root* session.
-
-		[root]$ exit
-
-Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` image from Docker store. Before issue pull command you have to login to Docker.
-
-	$ docker login
-	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-	Username: <YOUR_DOCKER_USERNAME>
-	Password: <YOUR_DOCKER_PASSWORD>
-	Login Succeeded
-	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
-	Trying to pull repository docker.io/store/oracle/weblogic ...
-	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
-	9fd8609e6e4d: Pull complete
-	eac7b4a33e34: Pull complete
-	b6f7d13c859b: Pull complete
-	e0ca246b2272: Pull complete
-	7ba4d6bfba43: Pull complete
-	5e3b8c4731f0: Pull complete
-	97623ceb6339: Pull complete
-	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
-	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
-
-Node2 preparation is done type **exit** again to end the *ssh* session.
-
-	[opc]$ exit
-
-###### Node3 - NFS client ######
-
-Log in using `ssh` to **Node3** and configure NFS client:
-
-	$ ssh -i ~/.ssh/id_rsa opc@129.146.166.187
-	Oracle Linux Server 7.4
-	Last login: Sat Jun 16 10:51:32 2018 from 86.59.134.172
-
-Change to *root* user.
-
-	[opc]$ sudo su -
-
-Create `/scratch` shared directory.
-
-	[root]$ mkdir /scratch
-
-Edit the `/etc/fstab` file.
-
-	[root]$ vi /etc/fstab
-
-Add the internal IP address and parameters of **Node1 - NFS server**. Append as last row.
-
-	#
-	# /etc/fstab
-	# Created by anaconda on Fri Feb  9 01:25:44 2018
-	#
-	# Accessible filesystems, by reference, are maintained under '/dev/disk'
-	# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
-	#
-	UUID=7247af6c-4b59-4934-a6be-a7929d296d83 /                       xfs     defaults,_netdev,_netdev 0 0
-	UUID=897D-798C          /boot/efi               vfat    defaults,uid=0,gid=0,umask=0077,shortname=winnt,_netdev,_netdev,x-initrd.mount 0 0
-	######################################
-	## ORACLE BARE METAL CLOUD CUSTOMERS
-	##
-	## If you are adding an iSCSI remote block volume to this file you MUST
-	## include the '_netdev' mount option or your instance will become
-	## unavailable after the next reboot.
-	##
-	## Example:
-	## /dev/sdb /data1  ext4    defaults,noatime,_netdev    0   2
-	##
-	## More information:
-	## https://docs.us-phoenix-1.oraclecloud.com/Content/Block/Tasks/connectingtoavolume.htm
-	##
-	10.0.12.4:/scratch /scratch  nfs nfsvers=3 0 0
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	~                                                                                                                                                                               
-	"/etc/fstab" 24L, 957C
-
-Save changes. Mount the shared `/scratch` directory.
-
-	[root]$ mount /scratch
-
-Restart the NFS service.
-
-	[root]$ service nfs-server restart
-
-Type **exit** to end *root* session.
-
-	[root]$ exit
-
-Last step to prepare this node is to pull the `store/oracle/weblogic:12.2.1.3` image from Docker store. Before issue pull command you have to login to Docker.
-
-	$ docker login
-	Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-	Username: <YOUR_DOCKER_USERNAME>
-	Password: <YOUR_DOCKER_PASSWORD>
-	Login Succeeded
-	[opc]$ docker pull store/oracle/weblogic:12.2.1.3
-	Trying to pull repository docker.io/store/oracle/weblogic ...
-	12.2.1.3: Pulling from docker.io/store/oracle/weblogic
-	9fd8609e6e4d: Pull complete
-	eac7b4a33e34: Pull complete
-	b6f7d13c859b: Pull complete
-	e0ca246b2272: Pull complete
-	7ba4d6bfba43: Pull complete
-	5e3b8c4731f0: Pull complete
-	97623ceb6339: Pull complete
-	Digest: sha256:4c7ce451c093329784a2808a55cd4fc4f1e93d8444b8492a24148d283936add9
-	Status: Downloaded newer image for docker.io/store/oracle/weblogic:12.2.1.3
-
-Node3 preparation is done type **exit** again to end the *ssh* session.
-
-	[opc]$ exit
-
-#### Modify the operator and domain configuration YAML files ####
-
-Final steps are to customize the parameters in the input YAML files for the WebLogic cluster and WebLogic Operator. The input YAML files and scripts provided in the [WebLogic Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator) project.
-
-Most likely you already cloned locally the WebLogic Kubernetes Operator source repository to build the operator image. If not then first clone locally. Using the following command the sources will be cloned into `weblogic-kubernetes-operator` folder in the current directory.
-
-	git clone https://github.com/oracle/weblogic-kubernetes-operator.git
-	Cloning into 'weblogic-kubernetes-operator'...
-	remote: Counting objects: 17144, done.
-	remote: Compressing objects: 100% (250/250), done.
-	remote: Total 17144 (delta 149), reused 288 (delta 92), pack-reused 16757
-	Receiving objects: 100% (17144/17144), 10.90 MiB | 1.99 MiB/s, done.
-	Resolving deltas: 100% (10803/10803), done.
-
-Change directory to `weblogic-kubernetes-operator/kubernetes` where the parameters input files located.
-
-	cd weblogic-kubernetes-operator/kubernetes
-
-Open and modify the following parameters in the *create-weblogic-operator-inputs.yaml* input file:
+Modify the following parameters in the *create-weblogic-operator-inputs.yaml* input file:
 
 | Parameter name                        | Value                                                                  | Note                                                                       |
 |---------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------------|
@@ -386,7 +121,11 @@ Open and modify the following parameters in the *create-weblogic-operator-inputs
 | weblogicOperatorImage                 | oracle/weblogic-kubernetes-operator:1.0 |  | |
 
 
-Save the changes. Open and modify the following parameters in the *create-weblogic-domain-inputs.yaml* input file:
+Save the changes. Open for edit the `create-weblogic-domain-inputs.yaml` parameter file using File Browser or using the following command:
+
+	gedit /u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-domain-inputs.yaml &
+
+and modify the following parameters in the *create-weblogic-domain-inputs.yaml* input file:
 
 | Parameter name            | Value                               | Note |
 |---------------------------|-------------------------------------|------|
@@ -401,13 +140,13 @@ Save the changes.
 
 #### Deploy WebLogic Kubernetes Operator and WebLogic Domain ####
 
-Create output directory for the operator and domain scripts.
+Open a terminal and create output directory for the operator and domain scripts.
 
-	mkdir -p /PATH_TO/weblogic-output-directory
+	mkdir -p /u01/weblogic-output-directory
 
-First run the create operator script, pointing it at your inputs file and the output directory. The best to execute in the locally cloned `weblogic-kubernetes-operator/kubernetes` folder:
+First run the create operator script, pointing it at your inputs file and the output directory.
 
-	./create-weblogic-operator.sh -i create-weblogic-operator-inputs.yaml -o /PATH_TO/weblogic-output-directory
+	/u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-operator.sh -i /u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-operator-inputs.yaml -o /u01/weblogic-output-directory
 	Input parameters being used
 	export version="create-weblogic-operator-inputs-v1"
 	export serviceAccount="weblogic-operator"
@@ -492,7 +231,7 @@ Before execute the last domain creation script you have to create the WebLogic a
 
 Now execute a similar command for the WebLogic domain creation:
 
-	./create-weblogic-domain.sh -i create-weblogic-domain-inputs.yaml -o /PATH_TO/weblogic-output-directory
+	/u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-domain.sh -i /u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-domain-inputs.yaml -o /u01/weblogic-output-directory
 	Input parameters being used
 	export version="create-weblogic-domain-inputs-v1"
 	export adminPort="7001"
@@ -599,24 +338,38 @@ To check the status of the WebLogic cluster, run this command:
 	domain1-managed-server1                      1/1       Running   0          7m
 	domain1-managed-server2                      1/1       Running   0          7m
 
-You have to see four running pods similar to the result above.
+You have to see four running pods similar to the result above. If you don't see all the running pods please wait and check periodically. The whole domain deployment may take up to 3-4 minutes depending on the compute shape.
 
 The WebLogic Administration server console is exposed to the external world using NodePort. To get the external IP address of the node where the admin server pod is deployed execute the following command which returns external (public) IP addresses belong to pods:
 
-	$ kubectl get pod -n domain1 -o wide
+	kubectl get pod -n domain1 -o wide
 	NAME                                         READY     STATUS    RESTARTS   AGE       IP           NODE
-	domain1-admin-server                         1/1       Running   0          32m       10.244.2.5   129.146.133.192
-	domain1-cluster-1-traefik-55cbccb8dd-srpcb   1/1       Running   0          32m       10.244.2.4   129.146.133.192
-	domain1-managed-server1                      0/1       Running   4          29m       10.244.0.6   129.146.88.147
-	domain1-managed-server2                      0/1       Running   0          29m       10.244.1.4   129.146.40.233
+	domain1-admin-server                         1/1       Running   0          32m       10.244.2.5   130.61.58.206
+	domain1-cluster-1-traefik-55cbccb8dd-srpcb   1/1       Running   0          32m       10.244.2.4   130.61.58.206
+	domain1-managed-server1                      0/1       Running   4          29m       10.244.0.6   130.61.58.206
+	domain1-managed-server2                      0/1       Running   0          29m       10.244.1.4   130.61.58.206
 
-Find the Node IP address belongs to the loadbalancer (*domain1-cluster-1-traefik-xxxxxxx*) pod. If you haven't changed the domain configuration then the console port is 30701. Construct the Administration Console's url and open in a browser:
+Find the Node IP address belongs to the *domain1-admin-server* pod.
+
+To get the port assignment retrieve the admin server service information. Execute the following:
+
+	kubectl get services -n domain1
+	NAME                                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)           AGE
+	domain1-admin-server                        NodePort    10.96.13.10    <none>        7001:30701/TCP    8m
+	domain1-admin-server-extchannel-t3channel   NodePort    10.96.69.58    <none>        30012:30012/TCP   6m
+	domain1-cluster-1-traefik                   NodePort    10.96.97.188   <none>        80:30305/TCP      8m
+	domain1-cluster-1-traefik-dashboard         NodePort    10.96.176.74   <none>        8080:30315/TCP    8m
+	domain1-cluster-cluster-1                   ClusterIP   10.96.36.241   <none>        8001/TCP          6m
+	domain1-managed-server1                     ClusterIP   10.96.95.211   <none>        8001/TCP          6m
+	domain1-managed-server2                     ClusterIP   10.96.130.75   <none>        8001/TCP          6m
+
+Find the port mapping belongs to the *domain1-admin-server* service. Note the second part of the mapping. It should be 30701 if you haven't changed the configuration. Construct the Administration Console's url and open in a browser:
 
 **http://<LOADBALANCER\_POD\_NODE\_PUBLIC\_IP\_ADDRESS>:30701/console**
 
 ![alt text](images/deploy.weblogic/11.weblogic.console.url.png)
 
-Enter the credentials defined in the secret *domain1-weblogic-credentials* previously. Click login.
+Enter the credentials defined in the secret *domain1-weblogic-credentials* previously (username:**weblogic**, password:**welcome1**). Click login.
 
 ![alt text](images/deploy.weblogic/12.weblogic.admin.console.png)
 
