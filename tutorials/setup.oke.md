@@ -206,7 +206,7 @@ In the Create Subnet dialog box, you specify the resources to associate with the
 Enter the following:
 
 - **Name:** Using your ID name it using the following pattern: **ID**VCNSubnetLB1. For example (if ID is 01): *01VCNSubnetLB1*
-- **Availability Domain:** The availability domain for the subnet. Select the availability domain which is assigned for you. For example *TUqv:EU-FRANKFURT-1-AD-2*.
+- **Availability Domain:** The availability domain for the subnet. Select the availability domain which is assigned to you. For example *TUqv:EU-FRANKFURT-1-AD-2*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.0.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -226,7 +226,7 @@ Now repeate the subnet creation but use different name, CIDR, DNS label and avai
 Enter the following:
 
 - **Name:** Using your ID name it using the following pattern: **ID**VCNSubnetLB2. For example (if ID is 01): *01VCNSubnetLB2*
-- **Availability Domain:** The availability domain for the subnet. Now select different availability domain which is assigned for you. For example *TUqv:EU-FRANKFURT-1-AD-3*.
+- **Availability Domain:** The availability domain for the subnet. Now select an availability domain which is NOT assigned to you. For example if the availability domain assigned to you is *TUqv:EU-FRANKFURT-1-AD-2* then select *TUqv:EU-FRANKFURT-1-AD-3*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.1.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
@@ -248,7 +248,7 @@ Click **Create Subnet**.
 Enter the following:
 
 - **Name:** Using your ID name it using the following pattern: **ID**VCNSubnetWorker. For example (if ID is 01): *01VCNSubnetWorker*
-- **Availability Domain:** The availability domain for the subnet. Important to select the availability domain which is assigned for you. For example *TUqv:EU-FRANKFURT-1-AD-2*.
+- **Availability Domain:** The availability domain for the subnet. Important to select the availability domain which is assigned to you. For example *TUqv:EU-FRANKFURT-1-AD-2*.
 - **CIDR Block:** A single, contiguous CIDR block for the subnet: `10.0.2.0/24`. You cannot change this value later.
 - **Route Table:** The route table to associate with the subnet. Select the default route table what you have modified in the previous steps.
 - **Private or public subnet:** Select *PUBLIC SUBNET*. This means the  VNICs in the subnet can have public IP addresses.
