@@ -23,7 +23,6 @@ Oracle services being used during the hands-on are the following:
 ### Prerequisites ###
 
 - Instructor provides Oracle Cloud Account credentials and specific settings to complete this hands on lab.
-  - [Workshop Resource Allocation](https://drive.google.com/open?id=1m9LRQ-Uu6hufcu5w0B1fS4hxp49pIC_GngQ1e5q4L3A)
 - Oracle Cloud Infrastructure CLI, `kubectl`. [Download](https://drive.google.com/open?id=11CvOZ-j50-2q9-rrQmxpEwmQZbPMkw2a) and import the preconfigured VirtualBox image (total required space > 12 GB)
   - [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads) if necessary.
 - [Github ](tutorials/sign.up.github.md) account.
