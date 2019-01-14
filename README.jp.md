@@ -20,11 +20,12 @@ Oracle services being used during the hands-on are the following:
 
 ![](tutorials/images/wlsonk8s.png)
 
+Note: in this hands on lab for demo purposes there will be only one worker node running in one availability domain.
+
 ### Prerequisites ###
 
 - Instructor provides Oracle Cloud Account credentials and specific settings to complete this hands on lab.
-  - [Workshop Resource Allocation](https://drive.google.com/open?id=1m9LRQ-Uu6hufcu5w0B1fS4hxp49pIC_GngQ1e5q4L3A)
-- Oracle Cloud Infrastructure CLI, `kubectl`. [Download](https://drive.google.com/open?id=11CvOZ-j50-2q9-rrQmxpEwmQZbPMkw2a) and import the preconfigured VirtualBox image (total required space > 12 GB)
+- Oracle Cloud Infrastructure CLI, kubectl. [Download](https://drive.google.com/open?id=11CvOZ-j50-2q9-rrQmxpEwmQZbPMkw2a) and import the preconfigured VirtualBox image (total required space > 12 GB)
   - [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads) if necessary.
 - [Github ](tutorials/sign.up.github.md) account.
 - [Oracle Container Pipeline](tutorials/sign.up.wercker.md) account.
@@ -39,8 +40,8 @@ After the proxy configuration double click the **Update** icon and wait until th
 
 ### The topics to be covered in this hands-on session are: ###
 
-1. [Setup Oracle Kubernetes Engine instance on Oracle Cloud Infrastructure.](tutorials/setup.oke.dk.md)
-2. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.dk.md)
+1. [Setup Oracle Kubernetes Engine instance on Oracle Cloud Infrastructure.](tutorials/setup.oke.jp.md)
+2. [Setup WebLogic domain on Kubernetes](tutorials/setup.weblogic.kubernetes.jp.md)
 3. [Create Oracle Container Pipeline to build sample JavaEE application and deploy to WebLogic running on Kubernetes ](tutorials/sample.app.pipeline.md)
 
 ### License ###

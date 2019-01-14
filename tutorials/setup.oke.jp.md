@@ -19,11 +19,11 @@ More information:
 
 #### Open the OCI console ####
 
-Sign in to [OCI console](https://console.us-ashburn-1.oraclecloud.com) of the *gse00014420* tenant.
+Sign in to [OCI console](https://console.us-ashburn-1.oraclecloud.com) of your tenant.
 
 ![alt text](images/extra/001.oci.console.png)
 
-Use the *oke.user* and the password distributed by the instructor.
+Use the user and the password distributed by the instructor.
 
 ![alt text](images/extra/002.oci.console.login.png)
 
@@ -325,14 +325,14 @@ To get kubernetes configuration first you need to configure OCI CLI. To make it 
 
 |Region|Command|
 |------|-------|
-|eu-frankfurt-1|bash -c "$(curl -L "http://bit.ly/configfrankfurt")"|
-|us-ashburn-1|bash -c "$(curl -L "http://bit.ly/configashburn")"|
-|us-phoenix-1|bash -c "$(curl -L "http://bit.ly/configphoenix")"|
-|uk-london-1|bash -c "$(curl -L "http://bit.ly/configlondon")"|
+|eu-frankfurt-1|bash -c "$(curl -L "http://.../configfrankfurt")"|
+|us-ashburn-1|bash -c "$(curl -L "http://.../configashburn")"|
+|us-phoenix-1|bash -c "$(curl -L "http://.../configphoenix")"|
+|uk-london-1|bash -c "$(curl -L "http://.../configlondon")"|
 
 For example:
 
-	$ bash -c "$(curl -L "http://bit.ly/configfrankfurt")"
+	$ bash -c "$(curl -L "http://.../configfrankfurt")"
 	% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 	100   171  100   171    0     0    219      0 --:--:-- --:--:-- --:--:--   218
