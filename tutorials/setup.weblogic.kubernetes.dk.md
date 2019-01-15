@@ -406,13 +406,11 @@ Save the changes.
 
 ---
 
-Note: if you need to clone WebLogic Kubernetes Operator v1.1 repository then execute the following commands:
+Note: if you need to clone WebLogic Kubernetes Operator v1.1 repository then execute the following command:
 
 	git clone https://github.com/oracle/weblogic-kubernetes-operator.git --branch v1.1
 
 Don't forget to replace your local repository folder location in the following commands.
-
-Also
 
 ---
 
