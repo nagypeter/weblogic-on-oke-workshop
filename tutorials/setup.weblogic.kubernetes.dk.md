@@ -80,9 +80,9 @@ The private key provided and its name is `id_rsa` and located in the VirtualBox 
 
 ---
 
-Note: you can generate your own `ssh` key pair. [See](ssh.keypair.gen.md) how to create on Linux/Unix environment.
+If you used the provided public key during OKE setup then download the private key [from here](https://drive.google.com/open?id=1cUUNkDRgOgnBS6pgHZctcjhg9z0Rnycn) to `~/.ssh`. Don't forget to modify the permission of the file. For example:
 
-In this case don't forget to replace your location and key file name in the following commands.
+ 	chmod 600 ~/.ssh/id_rsa
 
 ---
 
