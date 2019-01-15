@@ -404,7 +404,19 @@ Save the changes.
 
 #### Deploy WebLogic Kubernetes Operator and WebLogic Domain ####
 
-Open a terminal and create output directory for the operator and domain scripts.
+---
+
+Note: if you need to clone WebLogic Kubernetes Operator v1.1 repository then execute the following commands:
+
+	git clone https://github.com/oracle/weblogic-kubernetes-operator.git --branch v1.1
+
+Don't forget to replace your local repository folder location in the following commands.
+
+Also
+
+---
+
+Open a terminal and create output directory for the operator and domain scripts. (If you specify different output folder then don't forget change at every occurrence in the following commands.)
 
 	mkdir -p /u01/weblogic-output-directory
 
