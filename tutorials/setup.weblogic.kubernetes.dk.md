@@ -78,6 +78,14 @@ To get private IP addresses you need to `ssh` into every node. This requires you
 
 The private key provided and its name is `id_rsa` and located in the VirtualBox image's `~/.ssh/` folder.
 
+---
+
+Note: you can generate your own `ssh` key pair. [See](ssh.keypair.gen.md) how to create on Linux/Unix environment.
+
+In this case don't forget to replace your location and key file name in the following commands.
+
+---
+
 For example:
 
 	$ ssh -i ~/.ssh/id_rsa opc@129.146.103.156
