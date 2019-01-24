@@ -373,7 +373,17 @@ Node3 preparation is done type **exit** again to end the *ssh* session.
 
 Customize the parameters in the input YAML files for the WebLogic cluster and WebLogic Operator. The input YAML files and scripts provided in the [WebLogic Kubernetes Operator](https://github.com/oracle/weblogic-kubernetes-operator) project.
 
-The WebLogic Kubernetes Operator source repository can be found in the `/u01/content/weblogic-kubernetes-operator`. Open for edit the `create-weblogic-operator-inputs.yaml` parameter file using File Browser or using the following command:
+---
+
+Note: if you need (in the case if you don't run the tutorial from provided VirtualBox) to clone WebLogic Kubernetes Operator v1.1 repository then execute the following command:
+
+	git clone https://github.com/oracle/weblogic-kubernetes-operator.git --branch v1.1
+
+Don't forget to replace your local repository folder location in the following commands.
+
+---
+
+The WebLogic Kubernetes Operator source repository can be found (on VirtualBox image) in the `/u01/content/weblogic-kubernetes-operator`. Open for edit the `create-weblogic-operator-inputs.yaml` parameter file using File Browser or using the following command:
 
 	gedit /u01/content/weblogic-kubernetes-operator/kubernetes/create-weblogic-operator-inputs.yaml &
 
@@ -403,16 +413,6 @@ and modify the following parameters in the *create-weblogic-domain-inputs.yaml* 
 Save the changes.
 
 #### Deploy WebLogic Kubernetes Operator and WebLogic Domain ####
-
----
-
-Note: if you need to clone WebLogic Kubernetes Operator v1.1 repository then execute the following command:
-
-	git clone https://github.com/oracle/weblogic-kubernetes-operator.git --branch v1.1
-
-Don't forget to replace your local repository folder location in the following commands.
-
----
 
 Open a terminal and create output directory for the operator and domain scripts. (If you specify different output folder then don't forget change at every occurrence in the following commands.)
 
